@@ -52,8 +52,8 @@ class Item{
 class Movimiento{
 	var pp
     const ppMax
-    const tipo
-    const potencia
+    const property tipo
+    const property potencia
     const precision
     var property tipoDeMovimiento
 }
@@ -67,18 +67,4 @@ class Ataque inherits Movimiento(tipoDeMovimiento = "ataque"){
         objetivo.recibirDanio(danioRealizado)
 	}
 }
-
-
-//Items
-const perla = new Item(modificador = 1.5, alcance = "hp")
-
-//Movimientos
-const cascada = new Ataque(pp = 15, tipo = "agua" , precision = 100, ppMax = 15, potencia = 80)
-const espadinha = new Item(modificador = 1.1, alcance = "danioBase")
-const escudinho = new Item(modificador = 1.5, alcance = "defensaBase")
-
-
-
-//Pokemones
-const dragonite = new Pokemon(maxHp = 182, hp = 182, danioBase = 170, defensaBase = 131, item = perla, tipo = "Dragon", nivel = 1, sprite = "", velocidad = 116)
 
