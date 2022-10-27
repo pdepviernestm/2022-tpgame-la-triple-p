@@ -4,7 +4,7 @@ import pokemon.*
 
 
 object calculo{
-  method calcularEfectividad(tipoAtacante,tipoDefensor){
+ /*  method calcularEfectividad(tipoAtacante,tipoDefensor){
     if (tipoAtacante == "Fuego"){
       if (tipoDefensor == "Fuego") return 0.5
       if (tipoDefensor == "Planta") return 2
@@ -69,7 +69,7 @@ object calculo{
       if (tipoDefensor == "Planta") return 1
     }
   }
-  
+  */
   method calcularStab(tipoPokemon, tipoDeMovimiento){
     if (tipoPokemon==tipoDeMovimiento) return 1.5 else return 1
   }

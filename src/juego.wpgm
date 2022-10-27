@@ -28,7 +28,20 @@ object pokemon4{
 
     method image() = imagen
 }
-
+object pokemonRival{
+	var property imagen = "snorlax.png"
+	
+    method image() = imagen
+}
+object batalla{
+	const pokemonCompu = pokemonRival
+	var property pokemonJugador
+	
+	method start(){
+		game.addVisualIn(pokemonJugador,game.at(5,1))
+		game.addVisualIn(pokemonCompu,game.at(13,5))
+	}
+}
 object seleccionador{
 	var property indice = 1
 	const property listaPokemones = [pokemon1, pokemon2, pokemon3, pokemon4]
@@ -45,10 +58,14 @@ object seleccionador{
 		indice = (indice-1).max(1)
 		listaPokemones.take(indice).last().imagen("seleccionado.png")
 	}
+	
+	method seleccionar(){
+		var pokemonSeleccionado = listaPokemones.take(indice).last()
+		batalla.pokemonJugador(pokemonSeleccionado)
+	}
 }
 
 program juego {
-	
     game.title("Pokemon")
 
     game.width(20)
@@ -61,8 +78,11 @@ program juego {
       keyboard.left().onPressDo({
       	seleccionador.moverIzquierda()
       })
-      //keyboard.down().onPressDo()
-      //keyboard.right().onPressDo()/
+      keyboard.enter().onPressDo({
+      	seleccionador.seleccionar()
+      	game.clear()
+      	batalla.start()
+      })
 
       game.addVisual(pokemon1)
       game.addVisual(pokemon2)
