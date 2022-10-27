@@ -1,8 +1,90 @@
 import wollok.game.*
 import pokemon.*
 
+object pokemon1{
+    var property position = game.at(1,5)
+    var property imagen = "seleccionado.png"
+
+    method image() = imagen
+}
+
+object pokemon2{
+    var property position = game.at(5,5)
+	var property imagen = "snorlax.png"
+
+    method image() = imagen
+}
+
+object pokemon3{
+    var property position = game.at(9,5)
+    var property imagen = "snorlax.png"
+
+    method image() = imagen
+}
+
+object pokemon4{
+    var property position = game.at(13,5)
+	var property imagen = "snorlax.png"
+
+    method image() = imagen
+}
+
+object seleccionador{
+	var property indice = 1
+	const property listaPokemones = [pokemon1, pokemon2, pokemon3, pokemon4]
+	
+	method moverDerecha(){
+		var pokemonAnterior = listaPokemones.take(indice).last()
+		pokemonAnterior.imagen("snorlax.png")
+		indice = (indice+1).min(4)
+		listaPokemones.take(indice).last().imagen("seleccionado.png")
+	}
+	
+	method moverIzquierda(){
+		listaPokemones.take(indice).last().imagen("snorlax.png")
+		indice = (indice-1).max(1)
+		listaPokemones.take(indice).last().imagen("seleccionado.png")
+	}
+}
+
 program juego {
-	game.title("Juego Base")
-	//game.addVisual(pepita)
-	game.start()
+	
+    game.title("Pokemon")
+
+    game.width(20)
+      game.height(10)
+
+      keyboard.right().onPressDo({
+      	seleccionador.moverDerecha()
+      })
+      
+      keyboard.left().onPressDo({
+      	seleccionador.moverIzquierda()
+      })
+      //keyboard.down().onPressDo()
+      //keyboard.right().onPressDo()/
+
+      game.addVisual(pokemon1)
+      game.addVisual(pokemon2)
+      game.addVisual(pokemon3)
+      game.addVisual(pokemon4)
+
+
+      game.boardGround("background.jpg")
+    game.start()
+
+
+
+    // Jugador 1 Selecciona pokemon
+    //Jugador 2 selecciona random pokemon
+    //Jugador 1 elige ataque
+    //Hace efecto
+    //Turno Jugador 2 
+    // Ataca jugador 2 random
+    // .
+    // .
+    // .
+    // Uno gana
+
+
 }
