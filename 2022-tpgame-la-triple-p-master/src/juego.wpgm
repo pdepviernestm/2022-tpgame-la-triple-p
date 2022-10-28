@@ -1,0 +1,140 @@
+import wollok.game.*
+import pokemon.*
+
+object cartel{
+	var property imagen = "Cartel.png"
+	
+    method image() = imagen
+}
+
+object batalla{
+	const pokemonCompu = snorlax2
+	var property pokemonJugador
+	var x = 5
+	
+	method start(){
+		game.addVisualIn(pokemonJugador,game.at(4,1))
+		game.addVisualIn(pokemonCompu,game.at(13,10))
+		hpJugador.text(pokemonJugador.hp().toString())
+	    hpCompu.text(pokemonCompu.hp().toString())
+	    game.addVisualIn(hpJugador,game.at(13,7))
+	    game.addVisualIn(hpCompu,game.at(3,10))
+		game.addVisualIn(cartel, game.at(1,1))
+		seleccionadorMovimiento.listaMovimientos(pokemonJugador.movimientos())
+		seleccionadorMovimiento.pokemonCompu(pokemonCompu)
+		seleccionadorMovimiento.pokemonJugador(pokemonJugador)
+		pokemonJugador.movimientos().forEach{movimiento => 
+			game.addVisualIn(movimiento,game.at(x,3))
+			x+=2
+		}
+		keyboard.right().onPressDo({
+      		seleccionadorMovimiento.moverDerecha()
+	      })
+	      
+	    keyboard.left().onPressDo({
+	      seleccionadorMovimiento.moverIzquierda()
+	      })
+	      
+	    keyboard.enter().onPressDo({
+	      seleccionadorMovimiento.seleccionar()
+	      hpJugador.text(pokemonJugador.hp().toString())
+	      hpCompu.text(pokemonCompu.hp().toString())
+	     })		
+	}
+}
+
+object hpJugador{
+	var property text
+}
+
+object hpCompu{
+	var property text
+}
+
+object seleccionador{
+	var property indice = 0
+	const property listaPokemones = [snorlax]
+	
+	method moverDerecha(){
+		listaPokemones.get(indice).imagen("snorlax.png")
+		indice = (indice+1).min(3)
+		listaPokemones.get(indice).imagen("seleccionado.png")
+	}
+	
+	method moverIzquierda(){
+		listaPokemones.get(indice).imagen("snorlax.png")
+		indice = (indice-1).max(0)
+		listaPokemones.get(indice).imagen("seleccionado.png")
+	}
+	
+	method seleccionar(){
+		var pokemonSeleccionado = listaPokemones.get(indice)
+		batalla.pokemonJugador(pokemonSeleccionado)
+	}
+}
+
+object seleccionadorMovimiento{
+	var property listaMovimientos 
+	var property pokemonJugador
+	var property pokemonCompu
+	var indice = 0
+	
+	method moverDerecha(){
+		
+		listaMovimientos.get(indice).text(listaMovimientos.get(indice).nombre())
+		indice = (indice+1).min(3)
+		listaMovimientos.get(indice).text("!")
+	}
+	
+	method moverIzquierda(){
+		listaMovimientos.get(indice).text(listaMovimientos.get(indice).nombre())
+		indice = (indice-1).max(0)
+		listaMovimientos.get(indice).text("!")
+	}
+	
+	method seleccionar(){
+		var movimientoSeleccionado = listaMovimientos.get(indice)
+		movimientoSeleccionado.efecto(pokemonCompu,pokemonJugador)
+	}
+}
+
+program juego {
+    game.title("Pokemon")
+
+    game.width(20)
+      game.height(15)
+
+      keyboard.right().onPressDo({
+      	seleccionador.moverDerecha()
+      })
+      
+      keyboard.left().onPressDo({
+      	seleccionador.moverIzquierda()
+      })
+      keyboard.enter().onPressDo({
+      	seleccionador.seleccionar()
+      	game.clear()
+      	batalla.start()
+      })
+
+      game.addVisual(snorlax)
+
+
+      game.boardGround("background.jpg")
+    game.start()
+
+
+
+    // Jugador 1 Selecciona pokemon
+    //Jugador 2 selecciona random pokemon
+    //Jugador 1 elige ataque
+    //Hace efecto
+    //Turno Jugador 2 
+    // Ataca jugador 2 random
+    // .
+    // .
+    // .
+    // Uno gana
+
+
+}
