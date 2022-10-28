@@ -37,10 +37,47 @@ object batalla{
 	      
 	    keyboard.enter().onPressDo({
 	      seleccionadorMovimiento.seleccionar()
-	      hpJugador.text(pokemonJugador.hp().toString())
 	      hpCompu.text(pokemonCompu.hp().toString())
+	      if(manejadorTurno.muerto(pokemonCompu))
+	      {
+	      	game.clear()
+	      	finalizarJuego.ganaste()
+	      }else{
+	        manejadorTurno.ataqueCompu(pokemonCompu, pokemonJugador)
+	        hpJugador.text(pokemonJugador.hp().toString())
+	      }
+	      if(manejadorTurno.muerto(pokemonJugador))
+	      {
+	      	game.clear()
+	      	finalizarJuego.perdiste()
+	      }
 	     })		
 	}
+}
+object manejadorTurno{
+	
+	method ataqueCompu(pokemonCompu, pokemonJugador){
+		var indiceRandom = 0.randomUpTo(3).roundUp()
+		pokemonCompu.movimientos().get(indiceRandom).efecto(pokemonJugador,pokemonCompu)
+	}
+	
+	method muerto(pokemon) = pokemon.hp() == 0
+}
+
+object finalizarJuego{
+	method ganaste(){
+		game.addVisualIn(victoria,game.origin())
+	}
+	method perdiste(){
+		game.addVisualIn(derrota,game.origin())
+	}
+}
+
+object victoria{
+	method image() = "Victoria.png"
+}
+object derrota{
+	method image() = "Derrota.png"
 }
 
 object hpJugador{
@@ -81,20 +118,21 @@ object seleccionadorMovimiento{
 	
 	method moverDerecha(){
 		
-		listaMovimientos.get(indice).text(listaMovimientos.get(indice).nombre())
+		listaMovimientos.get(indice).deseleccionar()
 		indice = (indice+1).min(3)
-		listaMovimientos.get(indice).text("!")
+		listaMovimientos.get(indice).seleccionar()
 	}
 	
+	method movimientoActual() = listaMovimientos.get(indice)
+	
 	method moverIzquierda(){
-		listaMovimientos.get(indice).text(listaMovimientos.get(indice).nombre())
+		self.movimientoActual().deseleccionar()
 		indice = (indice-1).max(0)
-		listaMovimientos.get(indice).text("!")
+		self.movimientoActual().seleccionar()
 	}
 	
 	method seleccionar(){
-		var movimientoSeleccionado = listaMovimientos.get(indice)
-		movimientoSeleccionado.efecto(pokemonCompu,pokemonJugador)
+		self.movimientoActual().efecto(pokemonCompu,pokemonJugador)
 	}
 }
 
@@ -102,7 +140,7 @@ program juego {
     game.title("Pokemon")
 
     game.width(20)
-      game.height(15)
+    game.height(15)
 
       keyboard.right().onPressDo({
       	seleccionador.moverDerecha()
