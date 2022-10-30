@@ -11,6 +11,8 @@ object calculo{
   method precision(precision){
   	if (0.randomUpTo(1)<precision) return 1 else return 0
   }
+  
+  method danio(atacante,objetivo,movimiento) = ((((((( (2*atacante.nivel()) /5) +2)*(atacante.danioBase() ) ) *movimiento.potencia() ) /objetivo.defensaBase() )/50)*self.calcularStab(objetivo.tipo(),movimiento.tipo() )*self.calcularEfectividad(movimiento.tipo(),objetivo.tipo()))
 }
 /* 
  class Tipo{

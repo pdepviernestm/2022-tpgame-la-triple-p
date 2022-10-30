@@ -7,72 +7,6 @@ object cartel{
     method image() = imagen
 }
 
-object batalla{
-	const pokemonCompu = snorlax2
-	var property pokemonJugador
-	var x = 5
-	
-	method start(){
-		game.addVisualIn(pokemonJugador,game.at(4,1))
-		game.addVisualIn(pokemonCompu,game.at(13,10))
-		hpJugador.text(pokemonJugador.hp().toString())
-	    hpCompu.text(pokemonCompu.hp().toString())
-	    game.addVisualIn(hpJugador,game.at(13,7))
-	    game.addVisualIn(hpCompu,game.at(3,10))
-		game.addVisualIn(cartel, game.at(1,1))
-		seleccionadorMovimiento.listaMovimientos(pokemonJugador.movimientos())
-		seleccionadorMovimiento.pokemonCompu(pokemonCompu)
-		seleccionadorMovimiento.pokemonJugador(pokemonJugador)
-		pokemonJugador.movimientos().forEach{movimiento => 
-			game.addVisualIn(movimiento,game.at(x,3))
-			x+=2
-		}
-		keyboard.right().onPressDo({
-      		seleccionadorMovimiento.moverDerecha()
-	      })
-	      
-	    keyboard.left().onPressDo({
-	      seleccionadorMovimiento.moverIzquierda()
-	      })
-	      
-	    keyboard.enter().onPressDo({
-	      seleccionadorMovimiento.seleccionar()
-	      hpCompu.text(pokemonCompu.hp().toString())
-	      if(manejadorTurno.muerto(pokemonCompu))
-	      {
-	      	game.clear()
-	      	finalizarJuego.ganaste()
-	      }else{
-	        manejadorTurno.ataqueCompu(pokemonCompu, pokemonJugador)
-	        hpJugador.text(pokemonJugador.hp().toString())
-	      }
-	      if(manejadorTurno.muerto(pokemonJugador))
-	      {
-	      	game.clear()
-	      	finalizarJuego.perdiste()
-	      }
-	     })		
-	}
-}
-object manejadorTurno{
-	
-	method ataqueCompu(pokemonCompu, pokemonJugador){
-		var indiceRandom = 0.randomUpTo(3).roundUp()
-		pokemonCompu.movimientos().get(indiceRandom).efecto(pokemonJugador,pokemonCompu)
-	}
-	
-	method muerto(pokemon) = pokemon.hp() == 0
-}
-
-object finalizarJuego{
-	method ganaste(){
-		game.addVisualIn(victoria,game.origin())
-	}
-	method perdiste(){
-		game.addVisualIn(derrota,game.origin())
-	}
-}
-
 object victoria{
 	method image() = "Victoria.png"
 }
@@ -88,52 +22,132 @@ object hpCompu{
 	var property text
 }
 
-object seleccionador{
-	var property indice = 0
-	const property listaPokemones = [snorlax]
+object batalla{
+	const pokemonCompu = snorlax2
+	var property pokemonJugador
 	
-	method moverDerecha(){
-		listaPokemones.get(indice).imagen("snorlax.png")
-		indice = (indice+1).min(3)
-		listaPokemones.get(indice).imagen("seleccionado.png")
+	
+	method actualizarVidas(){
+		hpJugador.text(pokemonJugador.hp().toString())
+	    hpCompu.text(pokemonCompu.hp().toString())
 	}
 	
-	method moverIzquierda(){
-		listaPokemones.get(indice).imagen("snorlax.png")
-		indice = (indice-1).max(0)
-		listaPokemones.get(indice).imagen("seleccionado.png")
+	method ataqueJugador(){
+		seleccionador.posicionActual().efecto(pokemonCompu,pokemonJugador)
 	}
 	
-	method seleccionar(){
-		var pokemonSeleccionado = listaPokemones.get(indice)
-		batalla.pokemonJugador(pokemonSeleccionado)
+	method ataqueCompu(){
+		const indiceRandom = 0.randomUpTo(3).roundUp()
+		pokemonCompu.movimientos().get(indiceRandom).efecto(pokemonJugador,pokemonCompu)
+	}
+	
+	method muerto(pokemon)= pokemon.hp()==0
+	
+	method anadirVisuals(){
+		game.addVisualIn(pokemonJugador,game.at(4,1))
+		game.addVisualIn(pokemonCompu,game.at(13,10))	
+	    game.addVisualIn(hpJugador,game.at(13,7))
+	    game.addVisualIn(hpCompu,game.at(3,10))
+		game.addVisualIn(cartel, game.at(1,1))
+		
+		//							ratio, altura,inicial
+		visuals.anadirListaVisuals(game.width()*0.2,3,3)
+	}
+	
+	method start(){
+		seleccionador.lista(pokemonJugador.movimientos())
+		self.actualizarVidas()
+		self.anadirVisuals()
+		manager.botones()
+	    
+	    keyboard.enter().onPressDo({
+	     	self.ataqueJugador()
+	     	self.actualizarVidas()
+	      
+	     	if(self.muerto(pokemonCompu))
+	     	{
+	      		game.clear()
+	      		finalizarJuego.ganaste()
+	      	}else{
+	        	self.ataqueCompu()
+	        	self.actualizarVidas()
+	      	}
+	      	if(self.muerto(pokemonJugador))
+	      	{
+	      		game.clear()
+	      		finalizarJuego.perdiste()
+	      	}
+	     })		
 	}
 }
 
-object seleccionadorMovimiento{
-	var property listaMovimientos 
-	var property pokemonJugador
-	var property pokemonCompu
+object finalizarJuego{
+	method ganaste(){
+		game.addVisualIn(victoria,game.origin())
+	}
+	method perdiste(){
+		game.addVisualIn(derrota,game.origin())
+	}
+}
+
+object seleccionador{
+	var property lista 
 	var indice = 0
 	
 	method moverDerecha(){
-		
-		listaMovimientos.get(indice).deseleccionar()
-		indice = (indice+1).min(3)
-		listaMovimientos.get(indice).seleccionar()
+		self.posicionActual().deseleccionar()
+		indice = 3.min(indice+1)
+		self.posicionActual().seleccionar()
 	}
-	
-	method movimientoActual() = listaMovimientos.get(indice)
 	
 	method moverIzquierda(){
-		self.movimientoActual().deseleccionar()
-		indice = (indice-1).max(0)
-		self.movimientoActual().seleccionar()
+		self.posicionActual().deseleccionar()
+		indice = 0.max(indice-1)
+		self.posicionActual().seleccionar()
 	}
 	
-	method seleccionar(){
-		self.movimientoActual().efecto(pokemonCompu,pokemonJugador)
+	method posicionActual() = lista.get(indice)
+	
+}
+
+object visuals{
+	var x
+    method anadirListaVisuals(ratio,altura,inicial){
+    	x = inicial
+    	seleccionador.lista().forEach{elemento => 
+				game.addVisualIn(elemento,game.at(x,altura))
+				x+=ratio
+			}
+    }
+}
+
+object manager{
+	var property listaPokemons = [snorlax,snorlax2,snorlax3,snorlax4]
+		
+	method botones(){
+		keyboard.right().onPressDo({
+      		seleccionador.moverDerecha()
+    	})
+      
+    	keyboard.left().onPressDo({
+      		seleccionador.moverIzquierda()
+    	})
 	}
+	
+	method start(){
+		seleccionador.lista(listaPokemons)
+		self.botones()
+		//							ratio, altura, inicial
+		visuals.anadirListaVisuals(game.width()/4,3,0)
+		
+		keyboard.enter().onPressDo({
+      		batalla.pokemonJugador(seleccionador.posicionActual())
+      		game.clear()
+      		batalla.start()
+    	})
+	}
+	
+	
 }
 
 program juego {
@@ -141,38 +155,10 @@ program juego {
 
     game.width(20)
     game.height(15)
-
-      keyboard.right().onPressDo({
-      	seleccionador.moverDerecha()
-      })
-      
-      keyboard.left().onPressDo({
-      	seleccionador.moverIzquierda()
-      })
-      keyboard.enter().onPressDo({
-      	seleccionador.seleccionar()
-      	game.clear()
-      	batalla.start()
-      })
-
-      game.addVisual(snorlax)
-
-
-      game.boardGround("background.jpg")
+    game.boardGround("background.jpg")
+	
+	manager.start()
     game.start()
-
-
-
-    // Jugador 1 Selecciona pokemon
-    //Jugador 2 selecciona random pokemon
-    //Jugador 1 elige ataque
-    //Hace efecto
-    //Turno Jugador 2 
-    // Ataca jugador 2 random
-    // .
-    // .
-    // .
-    // Uno gana
 
 
 }

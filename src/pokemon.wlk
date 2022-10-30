@@ -10,10 +10,11 @@ class Pokemon{
     var property tipo
     var property defensaBase
     var velocidad
+    var property imagen = sprite
     var item
     var property position
-    
-    method image() = sprite
+ 
+    method image() = imagen
     
     method hp(nuevoHP){
         hp = nuevoHP.min(maxHp)
@@ -37,6 +38,12 @@ class Pokemon{
     }
     method tipo(nuevoTipo){
     	tipo = nuevoTipo
+    }
+    method seleccionar(){
+    	imagen = "seleccionado.png"
+    }
+    method deseleccionar(){
+    	imagen = sprite
     }
 }
 
@@ -66,17 +73,15 @@ class Movimiento{
     method deseleccionar(){
     	textColor="000000"
     }
-    
 }
 
 class Ataque inherits Movimiento(tipoDeMovimiento = "ataque"){
     method efecto(objetivo, atacante) {
         pp--
-        const efectividad = calculo.calcularEfectividad(self.tipo(),objetivo.tipo())  
-        const stab = calculo.calcularStab(atacante.tipo(), self.tipo())
-        const danioRealizado = ((((((( (2*atacante.nivel()) /5) +2)*(atacante.danioBase() ) ) *self.potencia() ) /objetivo.defensaBase() )/50)*stab )*efectividad
+        const danioRealizado = calculo.danio(atacante,objetivo,self)
         objetivo.recibirDanio(danioRealizado)
 	}
+	
 }
 
 const surf = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="SURF",tipo=agua, tipoDeMovimiento="ataque")
@@ -85,7 +90,9 @@ const ola = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=8
 const canto = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="CANTO",tipo=agua, tipoDeMovimiento="ataque")
 
 const snorlax = new Pokemon(position = game.at(1,5), movimientos = [surf, dormir, ola, canto] ,danioBase=50,defensaBase=40,hp=10,item="",maxHp=300, nivel=2, sprite="snorlax.png", tipo=agua, velocidad = 40)
-const snorlax2 = new Pokemon(position = game.at(15,13), movimientos = [surf, dormir, ola, canto] ,danioBase=50,defensaBase=40,hp=20,item="",maxHp=300, nivel=2, sprite="snorlax.png", tipo=agua, velocidad = 40)
+const snorlax2 = new Pokemon(position = game.at(5,5), movimientos = [surf, dormir, ola, canto] ,danioBase=50,defensaBase=40,hp=20,item="",maxHp=300, nivel=2, sprite="snorlax.png", tipo=agua, velocidad = 40)
+const snorlax3 = new Pokemon(position = game.at(9,5), movimientos = [surf, dormir, ola, canto] ,danioBase=50,defensaBase=40,hp=10,item="",maxHp=300, nivel=2, sprite="snorlax.png", tipo=agua, velocidad = 40)
+const snorlax4 = new Pokemon(position = game.at(13,5), movimientos = [surf, dormir, ola, canto] ,danioBase=50,defensaBase=40,hp=20,item="",maxHp=300, nivel=2, sprite="snorlax.png", tipo=agua, velocidad = 40)
 
 
 //const fuego = new Tipo()
