@@ -1,9 +1,11 @@
 import wollok.game.*
 import calcular.*
+
+//--------------------------- Clase Pokemones --------------------------//
 class Pokemon{
     var property hp
     var property nivel
-    const maxHp
+    const property maxHp
     const property movimientos = [] 
     const property spriteFrente
     const property spriteBack
@@ -61,6 +63,8 @@ class Pokemon{
     }
 }
 
+//--------------------------- Clase Items --------------------------//
+
 class Item{
     const modificador
     const alcance
@@ -70,7 +74,7 @@ class Item{
     }
 }
 
-
+//--------------------------- Clases Movimientos --------------------------//
 class Movimiento{
 	var pp
     const ppMax
@@ -95,103 +99,53 @@ class Ataque inherits Movimiento(tipoDeMovimiento = "ataque"){
         const danioRealizado = calculo.danio(atacante,objetivo,self)
         objetivo.recibirDanio(danioRealizado)
 	}
-	
 }
 
+class Curacion inherits Movimiento(tipoDeMovimiento = "curacion"){
+    const property hpCurado
+
+    method efecto(objetivo, atacante) {
+        pp--
+        const nuevoHp = (objetivo.hp() + hpCurado).min(objetivo.hpMax())
+        objetivo.hp(nuevoHp)
+	}
+}
+
+//--------------------------- Clase Tipos --------------------------//
+
+class Tipo{
+	var property esFuerteContra = []
+	var property esDebilContra = []
+	
+	method efectividad(unTipo){
+		if (esFuerteContra.contains(unTipo)) {
+			return 2
+		} else if (esDebilContra.contains(unTipo)) {
+			return 0.5
+		}
+		else return 1
+	}
+
+}
+
+
+//------------------------- Instancias -----------------------------//
+
+// Tipos
+const planta = new Tipo(esFuerteContra = [planta], esDebilContra = [fuego,veneno])
+const fuego = new Tipo(esFuerteContra = [planta], esDebilContra = [agua,fuego])
+const agua = new Tipo(esFuerteContra = [planta], esDebilContra = [agua,fuego])
+const electrico = new Tipo(esFuerteContra = [agua], esDebilContra = [planta])
+const veneno = new Tipo(esFuerteContra = [planta], esDebilContra = [veneno])
+
+// Movimientos
 const surf = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="SURF",tipo=agua, tipoDeMovimiento="ataque")
 const dormir = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="DORMIR",tipo=agua, tipoDeMovimiento="ataque")
 const ola = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="OLA",tipo=agua, tipoDeMovimiento="ataque")
 const canto = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="CANTO",tipo=agua, tipoDeMovimiento="ataque")
 
-//const fuego = new Tipo()
-//const agua = new Tipo()
-
-/*object crearTipos{
-
-	method instanciar(){
-	  fuego.agregarAtaque(fuego,0.5)
-	  //fuego.agregarAtaque(planta,2)
-	  fuego.agregarAtaque(agua,0.5)
-	  //fuego.agregarAtaque(tierra,1)
-	  //fuego.agregarAtaque(dragon,0.5)
-	  //fuego.agregarAtaque(hielo,2)
-	  //fuego.agregarAtaque(roca,0.5)
-
-	  agua.agregarAtaque(fuego,2)
-	  //agua.agregarAtaque(planta,0.5)
-	  agua.agregarAtaque(agua,0.5)
-	  //agua.agregarAtaque(tierra,2)
-	  //agua.agregarAtaque(dragon,0.5)
-	  //agua.agregarAtaque(hielo,1)
-	  //agua.agregarAtaque(roca,2)
-	}
-
-}*/
-
-
-
-object planta{
-	method fuego() = 0.5
-	method planta() = 2
-	method agua() = 0.5
-	method tierra() = 1
-	method dragon() = 0.5
-	method hielo() = 2
-	method roca() = 0.5
-}
-
-object agua{
-	method fuego() = 0.5
-	method planta() = 2
-	method agua() = 0.5
-	method tierra() = 1
-	method dragon() = 0.5
-	method hielo() = 2
-	method roca() = 0.5
-}
-
-
-object tierra{
-	method fuego() = 2
-	method planta() = 0.5
-	method agua() = 1
-	method tierra() = 1
-	method dragon() = 1
-	method hielo() = 1
-	method roca() = 2
-}
-
-object dragon{
-	method fuego() = 1
-	method planta() = 1
-	method agua() = 1
-	method tierra() = 1
-	method dragon() = 2
-	method hielo() = 1
-	method roca() = 1
-}
-
-object hielo{
-	method fuego() = 0.5
-	method planta() = 2
-	method agua() = 0.5
-	method tierra() = 2
-	method dragon() = 2
-	method hielo() = 0.5
-	method roca() = 1
-}
-
-object roca{
-	method fuego() = 2
-	method planta() = 1
-	method agua() = 1
-	method tierra() = 0.5
-	method dragon() = 1
-	method hielo() = 2
-	method roca() = 1
-}
-
-const snorlax = new Pokemon(position = game.at(1,5), 
+// Pokemones
+const pikachu = new Pokemon(position = game.at(1,7), 
 							movimientos = [surf, dormir, ola, canto],
 							danioBase=50,
 							defensaBase=40,
@@ -205,10 +159,10 @@ const snorlax = new Pokemon(position = game.at(1,5),
 							heridoFrente="pikachuFrenteDanio.png",
 							heridoBack="pikachuBackDanio.png",
 							pokeball="pokeball.png", 
-							tipo=agua, 
+							tipo=electrico, 
 							velocidad = 40)
 							
-const snorlax2 = new Pokemon(position = game.at(5,5), 
+const gengar = new Pokemon(position = game.at(5,7), 
 							movimientos = [surf, dormir, ola, canto],
 							danioBase=50,
 							defensaBase=40,
@@ -216,16 +170,16 @@ const snorlax2 = new Pokemon(position = game.at(5,5),
 							item="",
 							maxHp=300, 
 							nivel=2, 
-							nombre="pikachu",
+							nombre="gengar",
 							spriteFrente="pikachuFrente.png", 
 							spriteBack="pikachuBack.png", 
 							heridoFrente="pikachuFrenteDanio.png",
 							heridoBack="pikachuBackDanio.png",
 							pokeball="pokeball.png", 
-							tipo=agua, 
+							tipo=veneno, 
 							velocidad = 40)
 							
-const snorlax3 = new Pokemon(position = game.at(9,5), 
+const charmander = new Pokemon(position = game.at(9,7), 
 							movimientos = [surf, dormir, ola, canto],
 							danioBase=50,
 							defensaBase=40,
@@ -233,16 +187,16 @@ const snorlax3 = new Pokemon(position = game.at(9,5),
 							item="",
 							maxHp=300, 
 							nivel=2, 
-							nombre="pikachu",
+							nombre="charmander",
 							spriteFrente="pikachuFrente.png", 
 							spriteBack="pikachuBack.png", 
 							heridoFrente="pikachuFrenteDanio.png",
 							heridoBack="pikachuBackDanio.png",
 							pokeball="pokeball.png",
-							tipo=agua, 
+							tipo=fuego, 
 							velocidad = 40)
 							
-const snorlax4 = new Pokemon(position = game.at(13,5), 
+const bulbasaur = new Pokemon(position = game.at(13,7), 
 							movimientos = [surf, dormir, ola, canto],
 							danioBase=50,
 							defensaBase=40,
@@ -250,7 +204,24 @@ const snorlax4 = new Pokemon(position = game.at(13,5),
 							item="",
 							maxHp=300, 
 							nivel=2, 
-							nombre="pikachu",
+							nombre="bulbasaur",
+							spriteFrente="pikachuFrente.png", 
+							spriteBack="pikachuBack.png", 
+							heridoFrente="pikachuFrenteDanio.png",
+							heridoBack="pikachuBackDanio.png",
+							pokeball="pokeball.png", 
+							tipo=planta, 
+							velocidad = 40)
+
+const vaporeon = new Pokemon(position = game.at(13,2), 
+							movimientos = [surf, dormir, ola, canto],
+							danioBase=50,
+							defensaBase=40,
+							hp=20,
+							item="",
+							maxHp=300, 
+							nivel=2, 
+							nombre="bulbasaur",
 							spriteFrente="pikachuFrente.png", 
 							spriteBack="pikachuBack.png", 
 							heridoFrente="pikachuFrenteDanio.png",

@@ -22,6 +22,10 @@ object derrota{
 object batallaFondo{
 	method image() = "fondoBatalla.jpg"
 }
+object fondoSeleccion{
+	method image() = "seleccion.jpg"
+}
+
 
 object hpJugador{
 	var property text
@@ -46,8 +50,9 @@ object nombreJugador{
 object nombreCompu{
 	var property text
 }
+
 object batalla{
-	const property pokemonCompu = snorlax2
+	const property pokemonCompu = charmander
 	var property pokemonJugador
 	
 	
@@ -108,7 +113,7 @@ object batalla{
 	     	if(self.muerto(pokemonCompu))
 	     	{
 	      		game.clear()
-	      		finalizarJuego.ganaste()
+	      		finalizarJuego.ganaste(pokemonJugador,pokemonCompu)
 	      	}else{
 	        	self.ataqueCompu()
 	        	self.actualizarVidas()
@@ -116,18 +121,37 @@ object batalla{
 	      	if(self.muerto(pokemonJugador))
 	      	{
 	      		game.clear()
-	      		finalizarJuego.perdiste()
+	      		finalizarJuego.perdiste(pokemonJugador,pokemonCompu)
 	      	}
 	     })		
 	}
 }
 
 object finalizarJuego{
-	method ganaste(){
-		game.addVisualIn(victoria,game.origin())
+	method setPokemonesInicio(pokemonJugador,pokemonOponente){
+		pokemonJugador.deseleccionar()
+		pokemonJugador.hp(pokemonJugador.maxHp())
+		pokemonOponente.deseleccionar()
+		pokemonOponente.hp(pokemonOponente.maxHp())
 	}
-	method perdiste(){
+	
+	method ganaste(pokemonJugador,pokemonOponente){
+		game.addVisualIn(victoria,game.origin())
+		keyboard.c().onPressDo({
+			manager.start()
+			game.removeVisual(victoria)
+			self.setPokemonesInicio(pokemonJugador,pokemonOponente)
+		})
+		
+	}
+	
+	method perdiste(pokemonJugador,pokemonOponente){
 		game.addVisualIn(derrota,game.origin())
+		keyboard.c().onPressDo({
+			manager.start()
+			game.removeVisual(derrota)
+			self.setPokemonesInicio(pokemonJugador,pokemonOponente)
+		})
 	}
 }
 
@@ -163,7 +187,7 @@ object visuals{
 }
 
 object manager{
-	var property listaPokemons = [snorlax,snorlax2,snorlax3,snorlax4]
+	var property listaPokemons = [pikachu,charmander,gengar,bulbasaur]
 		
 	method botones(){
 		keyboard.right().onPressDo({
@@ -188,7 +212,6 @@ object manager{
       		batalla.start()
     	})
 	}
-	
 	
 }
 
