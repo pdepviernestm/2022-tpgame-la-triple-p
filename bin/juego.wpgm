@@ -6,12 +6,21 @@ object cartel{
 	
     method image() = imagen
 }
+object statsCartel{
+	method image() = "StatsCartel.png"
+}
+object statsCartel2{
+	method image() = "StatsCartel.png"
+}
 
 object victoria{
 	method image() = "Victoria.png"
 }
 object derrota{
 	method image() = "Derrota.png"
+}
+object batallaFondo{
+	method image() = "fondoBatalla.jpg"
 }
 
 object hpJugador{
@@ -22,33 +31,65 @@ object hpCompu{
 	var property text
 }
 
+object lvlJugador{
+	var property text
+}
+
+object lvlCompu{
+	var property text
+}
+
+object nombreJugador{
+	var property text
+}
+
+object nombreCompu{
+	var property text
+}
 object batalla{
-	const pokemonCompu = snorlax2
+	const property pokemonCompu = snorlax2
 	var property pokemonJugador
 	
 	
 	method actualizarVidas(){
+		pokemonJugador.mostrarBack()
+		pokemonCompu.seleccionar()
 		hpJugador.text(pokemonJugador.hp().toString())
 	    hpCompu.text(pokemonCompu.hp().toString())
+	    lvlJugador.text(pokemonJugador.nivel().toString())
+	    lvlCompu.text(pokemonCompu.nivel().toString())
+	    nombreJugador.text(pokemonJugador.nombre())
+	    nombreCompu.text(pokemonCompu.nombre())
 	}
 	
 	method ataqueJugador(){
 		seleccionador.posicionActual().efecto(pokemonCompu,pokemonJugador)
+		//pokemonCompu.heridoFrente()
+		//game.schedule(200, {pokemonCompu.seleccionar()})
+		
 	}
 	
 	method ataqueCompu(){
 		const indiceRandom = 0.randomUpTo(3).roundUp()
 		pokemonCompu.movimientos().get(indiceRandom).efecto(pokemonJugador,pokemonCompu)
+		//pokemonJugador.heridoBack()
+		//game.schedule(200, {pokemonJugador.mostrarBack()})
 	}
 	
 	method muerto(pokemon)= pokemon.hp()==0
 	
 	method anadirVisuals(){
-		game.addVisualIn(pokemonJugador,game.at(4,1))
-		game.addVisualIn(pokemonCompu,game.at(13,10))	
-	    game.addVisualIn(hpJugador,game.at(13,7))
-	    game.addVisualIn(hpCompu,game.at(3,10))
-		game.addVisualIn(cartel, game.at(1,1))
+		game.addVisualIn(pokemonJugador,game.at(3,4))
+		game.addVisualIn(pokemonCompu,game.at(11,8))
+		game.addVisualIn(statsCartel,game.at(11,5))
+		game.addVisualIn(statsCartel2,game.at(3,10))
+	    game.addVisualIn(hpJugador,game.at(12,6))
+	    game.addVisualIn(hpCompu,game.at(4,10))
+	    game.addVisualIn(lvlJugador,game.at(12,5))
+	    game.addVisualIn(lvlCompu,game.at(4,9))
+	    game.addVisualIn(nombreJugador,game.at(12,7))
+	    game.addVisualIn(nombreCompu,game.at(4,11))
+		game.addVisualIn(cartel, game.at(0,0))
 		
 		//							ratio, altura,inicial
 		visuals.anadirListaVisuals(game.width()*0.2,3,3)
@@ -143,6 +184,7 @@ object manager{
 		keyboard.enter().onPressDo({
       		batalla.pokemonJugador(seleccionador.posicionActual())
       		game.clear()
+      		game.addVisualIn(batallaFondo, game.origin())
       		batalla.start()
     	})
 	}
@@ -155,7 +197,7 @@ program juego {
 
     game.width(20)
     game.height(15)
-    game.boardGround("background.jpg")
+    game.boardGround("seleccion.jpg")
 	
 	manager.start()
     game.start()

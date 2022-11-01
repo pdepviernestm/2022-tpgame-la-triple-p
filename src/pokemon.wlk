@@ -5,12 +5,17 @@ class Pokemon{
     var property nivel
     const maxHp
     const property movimientos = [] 
-    const property sprite
+    const property spriteFrente
+    const property spriteBack
+    const property heridoFrente
+    const property heridoBack
+    const property pokeball
+    const property nombre
     var property danioBase
     var property tipo
     var property defensaBase
     var velocidad
-    var property imagen = sprite
+    var property imagen = pokeball
     var item
     var property position
  
@@ -40,10 +45,19 @@ class Pokemon{
     	tipo = nuevoTipo
     }
     method seleccionar(){
-    	imagen = "seleccionado.png"
+    	imagen = spriteFrente
     }
     method deseleccionar(){
-    	imagen = sprite
+    	imagen = pokeball
+    }
+    method heridoFrente(){
+   		imagen = heridoFrente
+    }
+    method heridoBack(){
+   		imagen = heridoBack
+    }
+    method mostrarBack(){
+    	imagen = spriteBack
     }
 }
 
@@ -88,12 +102,6 @@ const surf = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=
 const dormir = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="DORMIR",tipo=agua, tipoDeMovimiento="ataque")
 const ola = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="OLA",tipo=agua, tipoDeMovimiento="ataque")
 const canto = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="CANTO",tipo=agua, tipoDeMovimiento="ataque")
-
-const snorlax = new Pokemon(position = game.at(1,5), movimientos = [surf, dormir, ola, canto] ,danioBase=50,defensaBase=40,hp=10,item="",maxHp=300, nivel=2, sprite="snorlax.png", tipo=agua, velocidad = 40)
-const snorlax2 = new Pokemon(position = game.at(5,5), movimientos = [surf, dormir, ola, canto] ,danioBase=50,defensaBase=40,hp=20,item="",maxHp=300, nivel=2, sprite="snorlax.png", tipo=agua, velocidad = 40)
-const snorlax3 = new Pokemon(position = game.at(9,5), movimientos = [surf, dormir, ola, canto] ,danioBase=50,defensaBase=40,hp=10,item="",maxHp=300, nivel=2, sprite="snorlax.png", tipo=agua, velocidad = 40)
-const snorlax4 = new Pokemon(position = game.at(13,5), movimientos = [surf, dormir, ola, canto] ,danioBase=50,defensaBase=40,hp=20,item="",maxHp=300, nivel=2, sprite="snorlax.png", tipo=agua, velocidad = 40)
-
 
 //const fuego = new Tipo()
 //const agua = new Tipo()
@@ -182,3 +190,72 @@ object roca{
 	method hielo() = 2
 	method roca() = 1
 }
+
+const snorlax = new Pokemon(position = game.at(1,5), 
+							movimientos = [surf, dormir, ola, canto],
+							danioBase=50,
+							defensaBase=40,
+							hp=10,
+							item="",
+							maxHp=300, 
+							nivel=2, 
+							nombre="pikachu",
+							spriteFrente="pikachuFrente.png", 
+							spriteBack="pikachuBack.png", 
+							heridoFrente="pikachuFrenteDanio.png",
+							heridoBack="pikachuBackDanio.png",
+							pokeball="pokeball.png", 
+							tipo=agua, 
+							velocidad = 40)
+							
+const snorlax2 = new Pokemon(position = game.at(5,5), 
+							movimientos = [surf, dormir, ola, canto],
+							danioBase=50,
+							defensaBase=40,
+							hp=20,
+							item="",
+							maxHp=300, 
+							nivel=2, 
+							nombre="pikachu",
+							spriteFrente="pikachuFrente.png", 
+							spriteBack="pikachuBack.png", 
+							heridoFrente="pikachuFrenteDanio.png",
+							heridoBack="pikachuBackDanio.png",
+							pokeball="pokeball.png", 
+							tipo=agua, 
+							velocidad = 40)
+							
+const snorlax3 = new Pokemon(position = game.at(9,5), 
+							movimientos = [surf, dormir, ola, canto],
+							danioBase=50,
+							defensaBase=40,
+							hp=10,
+							item="",
+							maxHp=300, 
+							nivel=2, 
+							nombre="pikachu",
+							spriteFrente="pikachuFrente.png", 
+							spriteBack="pikachuBack.png", 
+							heridoFrente="pikachuFrenteDanio.png",
+							heridoBack="pikachuBackDanio.png",
+							pokeball="pokeball.png",
+							tipo=agua, 
+							velocidad = 40)
+							
+const snorlax4 = new Pokemon(position = game.at(13,5), 
+							movimientos = [surf, dormir, ola, canto],
+							danioBase=50,
+							defensaBase=40,
+							hp=20,
+							item="",
+							maxHp=300, 
+							nivel=2, 
+							nombre="pikachu",
+							spriteFrente="pikachuFrente.png", 
+							spriteBack="pikachuBack.png", 
+							heridoFrente="pikachuFrenteDanio.png",
+							heridoBack="pikachuBackDanio.png",
+							pokeball="pokeball.png", 
+							tipo=agua, 
+							velocidad = 40)
+

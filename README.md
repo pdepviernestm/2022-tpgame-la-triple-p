@@ -1,10 +1,11 @@
-# Nombre del juego (<- borrar y completar)
+# Pokémon, yo te elijo!
 
 ## Equipo de desarrollo
 
-- Alguien
-- Persona
-- etc.
+- Bruno De Angelis
+- Bruno Rizzo
+- Simon Mirleni
+- Milagros Trejo
 
 ## Capturas
 
@@ -17,6 +18,6 @@
 
 ## Otros
 
-- Curso/Facultad
-- Versión de wollok
+- UTN FRBA - K2005
+- Wollok 2021
 - Una vez terminado, no tenemos problemas en que el repositorio sea público / queremos manternerlo privado
