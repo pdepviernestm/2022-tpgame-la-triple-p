@@ -95,7 +95,6 @@ object batalla{
 	    game.addVisualIn(nombreJugador,game.at(12,7))
 	    game.addVisualIn(nombreCompu,game.at(4,11))
 		game.addVisualIn(cartel, game.at(0,0))
-		
 		//							ratio, altura,inicial
 		visuals.anadirListaVisuals(game.width()*0.2,3,3)
 	}
@@ -188,7 +187,7 @@ object visuals{
 
 object manager{
 	var property listaPokemons = [pikachu,charmander,gengar,bulbasaur]
-		
+	
 	method botones(){
 		keyboard.right().onPressDo({
       		seleccionador.moverDerecha()
@@ -201,6 +200,7 @@ object manager{
 	
 	method start(){
 		seleccionador.lista(listaPokemons)
+		instanciarTipos.instanciar()
 		self.botones()
 		//							ratio, altura, inicial
 		visuals.anadirListaVisuals(game.width()/4,3,0)
@@ -224,6 +224,4 @@ program juego {
 	
 	manager.start()
     game.start()
-
-
 }
