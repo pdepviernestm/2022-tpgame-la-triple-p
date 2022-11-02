@@ -80,7 +80,7 @@ class Movimiento{
     const ppMax
     const property tipo
     const property potencia
-    const precision
+    const property precision
     var property tipoDeMovimiento
     var property text
     var property textColor
@@ -125,28 +125,47 @@ class Tipo{
 		}
 		else return 1
 	}
-
 }
 
 
 //------------------------- Instancias -----------------------------//
 
 // Tipos
-const planta = new Tipo(esFuerteContra = [planta], esDebilContra = [fuego,veneno])
-const fuego = new Tipo(esFuerteContra = [planta], esDebilContra = [agua,fuego])
-const agua = new Tipo(esFuerteContra = [planta], esDebilContra = [agua,fuego])
-const electrico = new Tipo(esFuerteContra = [agua], esDebilContra = [planta])
-const veneno = new Tipo(esFuerteContra = [planta], esDebilContra = [veneno])
+const agua = new Tipo()
+const planta= new Tipo()
+const fuego= new Tipo()
+const electrico= new Tipo()
+const veneno= new Tipo()
+object instanciarTipos{
+	method instanciar(){
+		agua.esFuerteContra([fuego])
+		agua.esDebilContra([agua,planta])
+		planta.esFuerteContra([agua])
+		planta.esDebilContra([fuego,veneno,planta])
+		fuego.esFuerteContra([agua])
+		fuego.esDebilContra([fuego,veneno,planta])
+		electrico.esFuerteContra([agua])
+		electrico.esDebilContra([fuego,veneno,planta])
+		veneno.esFuerteContra([planta])
+		veneno.esDebilContra([veneno])
+	}
+}
+
+
+//const fuego = new Tipo(esFuerteContra = [planta], esDebilContra = [agua,fuego])
+
+//const electrico = new Tipo(esFuerteContra = [agua], esDebilContra = [planta])
+//const veneno = new Tipo(esFuerteContra = [planta], esDebilContra = [veneno])
 
 // Movimientos
 const surf = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="SURF",tipo=agua, tipoDeMovimiento="ataque")
-const dormir = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="DORMIR",tipo=agua, tipoDeMovimiento="ataque")
+const ondaToxica = new Ataque(textColor="000000",potencia=95,pp=20,ppMax=10,precision=100,text="ONDA TOXICA",tipo=veneno, tipoDeMovimiento="ataque")
 const ola = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="OLA",tipo=agua, tipoDeMovimiento="ataque")
 const canto = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="CANTO",tipo=agua, tipoDeMovimiento="ataque")
 
 // Pokemones
 const pikachu = new Pokemon(position = game.at(1,7), 
-							movimientos = [surf, dormir, ola, canto],
+							movimientos = [surf, ondaToxica, ola, canto],
 							danioBase=50,
 							defensaBase=40,
 							hp=10,
@@ -163,13 +182,13 @@ const pikachu = new Pokemon(position = game.at(1,7),
 							velocidad = 40)
 							
 const gengar = new Pokemon(position = game.at(5,7), 
-							movimientos = [surf, dormir, ola, canto],
-							danioBase=50,
-							defensaBase=40,
-							hp=20,
+							movimientos = [surf, ondaToxica, ola, canto],
+							danioBase=198,
+							defensaBase=188,
+							hp=293,
 							item="",
-							maxHp=300, 
-							nivel=2, 
+							maxHp=293, 
+							nivel=50, 
 							nombre="gengar",
 							spriteFrente="GengarFrente.png", 
 							spriteBack="GengarBack.png", 
@@ -177,10 +196,10 @@ const gengar = new Pokemon(position = game.at(5,7),
 							heridoBack="GengarBackDanio.png",
 							pokeball="pokeball.png", 
 							tipo=veneno, 
-							velocidad = 40)
+							velocidad = 288)
 							
 const charmander = new Pokemon(position = game.at(9,7), 
-							movimientos = [surf, dormir, ola, canto],
+							movimientos = [surf, ondaToxica, ola, canto],
 							danioBase=50,
 							defensaBase=40,
 							hp=10,
@@ -197,7 +216,7 @@ const charmander = new Pokemon(position = game.at(9,7),
 							velocidad = 40)
 							
 const bulbasaur = new Pokemon(position = game.at(13,7), 
-							movimientos = [surf, dormir, ola, canto],
+							movimientos = [surf, ondaToxica, ola, canto],
 							danioBase=50,
 							defensaBase=40,
 							hp=20,
@@ -214,19 +233,18 @@ const bulbasaur = new Pokemon(position = game.at(13,7),
 							velocidad = 40)
 
 const vaporeon = new Pokemon(position = game.at(13,2), 
-							movimientos = [surf, dormir, ola, canto],
-							danioBase=50,
-							defensaBase=40,
-							hp=20,
+							movimientos = [surf, ondaToxica, ola, canto],
+							danioBase=101,
+							defensaBase=96,
+							hp=221,
 							item="",
-							maxHp=300, 
-							nivel=2, 
+							maxHp=221, 
+							nivel=50, 
 							nombre="vaporeon",
 							spriteFrente="VaporeonFrente.png", 
 							spriteBack="VaporeonBack.png", 
 							heridoFrente="VaporeonFrenteDanio.png",
-							heridoBack="VaporeonBackDanio.png",
-							pokeball="pokeball.png", 
+							heridoBack="VaporeonBackDanio.png",pokeball="pokeball.png", 
 							tipo=agua, 
-							velocidad = 40)
+							velocidad = 101)
 
