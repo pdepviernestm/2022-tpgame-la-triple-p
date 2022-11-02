@@ -52,7 +52,7 @@ object nombreCompu{
 }
 
 object batalla{
-	const property pokemonCompu = charmander
+	const property pokemonCompu = vaporeon
 	var property pokemonJugador
 	
 	
