@@ -29,10 +29,12 @@ object fondoSeleccion{
 
 object hpJugador{
 	var property text
+	var property textColor = "0000FF"
 }
 
 object hpCompu{
 	var property text
+	var property textColor = "0000FF"
 }
 
 object lvlJugador{
@@ -52,23 +54,27 @@ object nombreCompu{
 }
 
 object batalla{
-	const property pokemonCompu = vaporeon
+	var property pokemonCompu
 	var property pokemonJugador
 	
-	
-	method actualizarVidas(){
+	method hud(){
 		pokemonJugador.mostrarBack()
 		pokemonCompu.seleccionar()
-		hpJugador.text(pokemonJugador.hp().toString())
-	    hpCompu.text(pokemonCompu.hp().toString())
 	    lvlJugador.text(pokemonJugador.nivel().toString())
 	    lvlCompu.text(pokemonCompu.nivel().toString())
 	    nombreJugador.text(pokemonJugador.nombre())
 	    nombreCompu.text(pokemonCompu.nombre())
 	}
 	
+	method actualizarVida(pokemon,vida){
+		vida.text(pokemon.hp().toString())
+		game.schedule(10,{vida.textColor("FF0000")})
+		game.schedule(250,{vida.textColor("0000FF")})
+	}
+	
 	method ataqueJugador(){
 		seleccionador.posicionActual().efecto(pokemonCompu,pokemonJugador)
+		game.schedule(250,{self.actualizarVida(pokemonCompu,hpCompu)})
 		//pokemonCompu.heridoFrente()
 		//game.schedule(200, {pokemonCompu.seleccionar()})
 		
@@ -77,6 +83,7 @@ object batalla{
 	method ataqueCompu(){
 		const indiceRandom = 0.randomUpTo(3).roundUp()
 		pokemonCompu.movimientos().get(indiceRandom).efecto(pokemonJugador,pokemonCompu)
+		game.schedule(1500,{self.actualizarVida(pokemonJugador,hpJugador)})
 		//pokemonJugador.heridoBack()
 		//game.schedule(200, {pokemonJugador.mostrarBack()})
 	}
@@ -95,28 +102,27 @@ object batalla{
 	    game.addVisualIn(nombreJugador,game.at(12,7))
 	    game.addVisualIn(nombreCompu,game.at(4,11))
 		game.addVisualIn(cartel, game.at(0,0))
-		
 		//							ratio, altura,inicial
 		visuals.anadirListaVisuals(game.width()*0.2,3,3)
 	}
 	
 	method start(){
 		seleccionador.lista(pokemonJugador.movimientos())
-		self.actualizarVidas()
+		self.hud()
+		self.actualizarVida(pokemonJugador,hpJugador)
+		self.actualizarVida(pokemonCompu,hpCompu)
 		self.anadirVisuals()
 		manager.botones()
 	    
 	    keyboard.enter().onPressDo({
 	     	self.ataqueJugador()
-	     	self.actualizarVidas()
-	      
+	      	
 	     	if(self.muerto(pokemonCompu))
 	     	{
 	      		game.clear()
 	      		finalizarJuego.ganaste(pokemonJugador,pokemonCompu)
 	      	}else{
 	        	self.ataqueCompu()
-	        	self.actualizarVidas()
 	      	}
 	      	if(self.muerto(pokemonJugador))
 	      	{
@@ -157,7 +163,7 @@ object finalizarJuego{
 
 object seleccionador{
 	var property lista 
-	var indice = 0
+	var property indice = 0
 	
 	method moverDerecha(){
 		self.posicionActual().deseleccionar()
@@ -173,6 +179,16 @@ object seleccionador{
 	
 	method posicionActual() = lista.get(indice)
 	
+	method asignarPokemonCompu(){
+		const indiceRandom = 0.randomUpTo(3).roundUp()
+		if(indiceRandom!=indice){
+			batalla.pokemonCompu(lista.get(indiceRandom))
+		}else if(indiceRandom < 3){
+			batalla.pokemonCompu(lista.get(indiceRandom+1))
+		}else{
+			batalla.pokemonCompu(lista.get(indiceRandom-1))
+		}
+	}
 }
 
 object visuals{
@@ -188,7 +204,7 @@ object visuals{
 
 object manager{
 	var property listaPokemons = [pikachu,charmander,gengar,bulbasaur]
-		
+	
 	method botones(){
 		keyboard.right().onPressDo({
       		seleccionador.moverDerecha()
@@ -198,15 +214,17 @@ object manager{
       		seleccionador.moverIzquierda()
     	})
 	}
-	
+
 	method start(){
 		seleccionador.lista(listaPokemons)
+		instanciarTipos.instanciar()
 		self.botones()
 		//							ratio, altura, inicial
 		visuals.anadirListaVisuals(game.width()/4,3,0)
 		
 		keyboard.enter().onPressDo({
       		batalla.pokemonJugador(seleccionador.posicionActual())
+      		seleccionador.asignarPokemonCompu()
       		game.clear()
       		game.addVisualIn(batallaFondo, game.origin())
       		batalla.start()
@@ -224,6 +242,4 @@ program juego {
 	
 	manager.start()
     game.start()
-
-
 }
