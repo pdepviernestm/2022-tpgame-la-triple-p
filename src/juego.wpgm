@@ -26,7 +26,6 @@ object fondoSeleccion{
 	method image() = "seleccion.jpg"
 }
 
-
 object hpJugador{
 	var property text
 	var property textColor = "0000FF"
@@ -39,19 +38,40 @@ object hpCompu{
 
 object lvlJugador{
 	var property text
+	var property textColor = "000000"
 }
 
 object lvlCompu{
 	var property text
+	var property textColor = "000000"
 }
 
 object nombreJugador{
 	var property text
+	var property textColor = "000000"
 }
 
 object nombreCompu{
 	var property text
+	var property textColor = "000000"
 }
+
+object musicaTitulos{
+	const property musicaInicio = game.sound("MusicaInicio.mp3")
+}
+
+object musicaBatalla{
+	const property batalla = game.sound("Batalla.mp3")
+}
+
+object musicaDerrota{
+	const property derrota = game.sound("Derrota.mp3")
+}
+
+object musicaVictoria{
+	const property victoria = game.sound("Victoria.mp3")
+}
+
 
 object batalla{
 	var property pokemonCompu
@@ -103,15 +123,15 @@ object batalla{
 	
 	method anadirVisuals(){
 		game.addVisualIn(pokemonJugador,game.at(3,4))
-		game.addVisualIn(pokemonCompu,game.at(11,8))
+		game.addVisualIn(pokemonCompu,game.at(11,9))
 		game.addVisualIn(statsCartel,game.at(11,5))
 		game.addVisualIn(statsCartel2,game.at(3,10))
 	    game.addVisualIn(hpJugador,game.at(12,6))
-	    game.addVisualIn(hpCompu,game.at(4,10))
+	    game.addVisualIn(hpCompu,game.at(4,11))
 	    game.addVisualIn(lvlJugador,game.at(12,5))
-	    game.addVisualIn(lvlCompu,game.at(4,9))
+	    game.addVisualIn(lvlCompu,game.at(4,10))
 	    game.addVisualIn(nombreJugador,game.at(12,7))
-	    game.addVisualIn(nombreCompu,game.at(4,11))
+	    game.addVisualIn(nombreCompu,game.at(4,12))
 		game.addVisualIn(cartel, game.at(0,0))
 		//							ratio, altura,inicial
 		visuals.anadirListaVisuals(game.width()*0.2,3,3)
@@ -130,12 +150,14 @@ object batalla{
 	      	
 	     	if(self.muerto(pokemonCompu))
 	     	{
+	     		//musicaBatalla.batalla().stop()
 	      		game.clear()
 	      		finalizarJuego.ganaste(pokemonJugador,pokemonCompu)
 	      	}else{
 	      		game.schedule(1500,{self.ataqueCompu()
 	      			if(self.muerto(pokemonJugador))
 	      			{
+	      				//musicaBatalla.batalla().stop()
 			      		game.clear()
 			      		finalizarJuego.perdiste(pokemonJugador,pokemonCompu)
 	      			}
@@ -151,11 +173,14 @@ object finalizarJuego{
 		pokemonJugador.hp(pokemonJugador.maxHp())
 		pokemonOponente.deseleccionar()
 		pokemonOponente.hp(pokemonOponente.maxHp())
+		//musicaTitulos.musicaInicio().play()
 	}
 	
 	method ganaste(pokemonJugador,pokemonOponente){
 		game.addVisualIn(victoria,game.origin())
+		//musicaVictoria.victoria().play()
 		keyboard.c().onPressDo({
+			//musicaVictoria.victoria().stop()
 			manager.start()
 			game.removeVisual(victoria)
 			self.setPokemonesInicio(pokemonJugador,pokemonOponente)
@@ -164,8 +189,10 @@ object finalizarJuego{
 	}
 	
 	method perdiste(pokemonJugador,pokemonOponente){
+		//musicaDerrota.derrota().play()
 		game.addVisualIn(derrota,game.origin())
 		keyboard.c().onPressDo({
+			//musicaDerrota.derrota().stop()
 			manager.start()
 			game.removeVisual(derrota)
 			self.setPokemonesInicio(pokemonJugador,pokemonOponente)
@@ -178,12 +205,14 @@ object seleccionador{
 	var property indice = 0
 	
 	method moverDerecha(){
+		game.sound("Muevo.mp3").play()
 		self.posicionActual().deseleccionar()
 		indice = 3.min(indice+1)
 		self.posicionActual().seleccionar()
 	}
 	
 	method moverIzquierda(){
+		game.sound("Muevo.mp3").play()
 		self.posicionActual().deseleccionar()
 		indice = 0.max(indice-1)
 		self.posicionActual().seleccionar()
@@ -232,17 +261,19 @@ object manager{
 		instanciarTipos.instanciar()
 		self.botones()
 		//							ratio, altura, inicial
-		visuals.anadirListaVisuals(game.width()/4,3,0)
+		visuals.anadirListaVisuals(game.width()/4,2,1)
 		
 		keyboard.space().onPressDo({
+			game.sound("Capturado.mp3").play()
+			//musicaTitulos.musicaInicio().stop()       // Lo sacamos porque solo puede reproducirse una vez 
+			//musicaBatalla.batalla().play()
       		batalla.pokemonJugador(seleccionador.posicionActual())
       		seleccionador.asignarPokemonCompu()
       		game.clear()
       		game.addVisualIn(batallaFondo, game.origin())
       		batalla.start()
     	})
-	}
-	
+	}	
 }
 
 program juego {
@@ -251,6 +282,11 @@ program juego {
     game.width(20)
     game.height(15)
     game.boardGround("seleccion.jpg")
+	
+	musicaTitulos.musicaInicio().volume(0.5)
+	musicaTitulos.musicaInicio().shouldLoop(true)
+	game.schedule(500, { musicaTitulos.musicaInicio().play()} )
+	keyboard.m().onPressDo({musicaTitulos.musicaInicio().stop()})
 	
 	manager.start()
     game.start()

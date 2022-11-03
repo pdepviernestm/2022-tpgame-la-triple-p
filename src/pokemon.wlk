@@ -99,6 +99,7 @@ class Ataque inherits Movimiento(tipoDeMovimiento = "ataque"){
         pp--
         const danioRealizado = calculo.danio(atacante,objetivo,self)
         objetivo.recibirDanio(danioRealizado)
+        game.sound("Danio.mp3").play()
 	}
 }
 
@@ -109,6 +110,7 @@ class Curacion inherits Movimiento(tipoDeMovimiento = "curacion"){
         pp--
         const nuevoHp = (objetivo.hp() + hpCurado*objetivo.maxHp()).min(objetivo.maxHp())
         objetivo.hp(nuevoHp)
+        game.sound("Curacion.mp3").play()
 	}
 }
 
@@ -187,7 +189,7 @@ const pikachu = new Pokemon(position = game.at(1,7),
 							item="",
 							maxHp=126, 
 							nivel=50, 
-							nombre="pikachu",
+							nombre="  Pikachu",
 							spriteFrente="pikachuFrente.png", 
 							spriteBack="pikachuBack.png", 
 							heridoFrente="pikachuFrenteDanio.png",
@@ -204,7 +206,7 @@ const gengar = new Pokemon(position = game.at(5,7),
 							item="",
 							maxHp=293, 
 							nivel=50, 
-							nombre="gengar",
+							nombre="  Gengar",
 							spriteFrente="GengarFrente.png", 
 							spriteBack="GengarBack.png", 
 							heridoFrente="GengarFrenteDanio.png",
@@ -221,7 +223,7 @@ const charmander = new Pokemon(position = game.at(9,7),
 							item="",
 							maxHp=130, 
 							nivel=50, 
-							nombre="charmander",
+							nombre="  Charmander",
 							spriteFrente="CharmanderFrente.png", 
 							spriteBack="CharmanderBack.png", 
 							heridoFrente="CharmanderFrenteDanio.png",
@@ -238,7 +240,7 @@ const bulbasaur = new Pokemon(position = game.at(13,7),
 							item="",
 							maxHp=136, 
 							nivel=50, 
-							nombre="bulbasaur",
+							nombre="  Bulbasaur",
 							spriteFrente="BulbasaurFrente.png", 
 							spriteBack="BulbasaurBack.png", 
 							heridoFrente="BulbasaurFrenteDanio.png",
@@ -255,11 +257,10 @@ const vaporeon = new Pokemon(position = game.at(13,2),
 							item="",
 							maxHp=221, 
 							nivel=50, 
-							nombre="vaporeon",
+							nombre="Vaporeon",
 							spriteFrente="VaporeonFrente.png", 
 							spriteBack="VaporeonBack.png", 
 							heridoFrente="VaporeonFrenteDanio.png",
 							heridoBack="VaporeonBackDanio.png",pokeball="pokeball.png", 
 							tipo=agua, 
 							velocidad = 101)
-
