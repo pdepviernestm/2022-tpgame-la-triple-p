@@ -9,12 +9,17 @@
 
 ## Capturas
 
-(agregar)
+![Pantalla de inicio](CapturaInicio.PNG)
+![Batalla](CapturaBatalla.PNG)
+![Victoria](PantallaVictoria.PNG)
+![Derrota](PantallaDerrota.PNG)
 
-## Reglas de Juego / Instrucciones
+## Reglas de Juego
 
-(Escribirlas)
-
+Este es un juego de batallas pokemon.
+- Se debe seleccionar un pokemon para luchar
+- Se generará un rival automáticamente
+- En un sistema de batalla por turnos, se debe elegir entre las habilidades del pokemon para ganar la partida
 
 ## Otros
 
