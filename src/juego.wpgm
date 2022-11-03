@@ -143,7 +143,6 @@ object batalla{
 	method inicializarVida(pokemon,vida){vida.text(pokemon.hp().toString())}
 	
 	method start(){
-		keyboard.m().onPressDo({musicaBatalla.batalla().pause()})
 		seleccionador.lista(pokemonJugador.movimientos())
 		self.hud()
 		self.inicializarVida(pokemonJugador,hpJugador)
@@ -262,7 +261,6 @@ object manager{
 	}
 
 	method start(){
-		keyboard.m().onPressDo({musicaTitulos.musicaInicio().stop()})
 		seleccionador.lista(listaPokemons)
 		instanciarTipos.instanciar()
 		self.botones()
@@ -289,15 +287,14 @@ program juego {
     game.height(15)
     game.boardGround("seleccion.jpg")
 	
-	musicaBatalla.batalla().volume(0.2)
+	musicaBatalla.batalla().volume(0.1)
 	musicaBatalla.batalla().shouldLoop(true)
-	musicaTitulos.musicaInicio().volume(0.2)
+	musicaTitulos.musicaInicio().volume(0.1)
 	musicaTitulos.musicaInicio().shouldLoop(true)
 	game.schedule(500, { musicaTitulos.musicaInicio().play()
 						musicaBatalla.batalla().play()
 						musicaBatalla.batalla().pause()
 	} )
-	keyboard.m().onPressDo({musicaTitulos.musicaInicio().stop()})
 	
 	manager.start()
     game.start()
