@@ -93,11 +93,16 @@ object batalla{
 	}
 	
 	method ataqueJugador(){
-		seleccionador.posicionActual().efecto(pokemonCompu,pokemonJugador)
-		if (seleccionador.posicionActual().tipoDeMovimiento()=="curacion"){
-			game.schedule(250,{self.actualizarVida(pokemonJugador,hpJugador)})
+		var movimientoJugador = seleccionador.posicionActual()
+		movimientoJugador.efecto(pokemonCompu,pokemonJugador)
+		game.say(pokemonJugador, pokemonJugador.nombre() + " ha usado " + movimientoJugador.text() + "!")
+		if (movimientoJugador.tipoDeMovimiento()=="curacion"){
+			game.schedule(250,{
+				self.actualizarVida(pokemonJugador,hpJugador)
+			})
 		}else{
-			game.schedule(250,{self.actualizarVida(pokemonCompu,hpCompu)
+			game.schedule(250,{
+				self.actualizarVida(pokemonCompu,hpCompu)
 				pokemonCompu.heridoFrente()
 				game.schedule(100, {pokemonCompu.seleccionar()})
 			})
@@ -108,14 +113,13 @@ object batalla{
 		const indiceRandom = 0.randomUpTo(3).roundUp()
 		var movimientoCompu=pokemonCompu.movimientos().get(indiceRandom)
 		movimientoCompu.efecto(pokemonJugador,pokemonCompu)
+		game.say(pokemonCompu, pokemonCompu.nombre() + " ha usado " +movimientoCompu.text() + "!")
 		if (movimientoCompu.tipoDeMovimiento()=="curacion"){
 			self.actualizarVida(pokemonCompu,hpCompu)
 		}else{
-		
 			self.actualizarVida(pokemonJugador,hpJugador)
 			pokemonJugador.heridoBack()
 			game.schedule(100, {pokemonJugador.mostrarBack()})
-			
 		}
 	}
 	
@@ -137,7 +141,9 @@ object batalla{
 		visuals.anadirListaVisuals(game.width()*0.2,3,3)
 	}
 	method inicializarVida(pokemon,vida){vida.text(pokemon.hp().toString())}
+	
 	method start(){
+		keyboard.m().onPressDo({musicaBatalla.batalla().pause()})
 		seleccionador.lista(pokemonJugador.movimientos())
 		self.hud()
 		self.inicializarVida(pokemonJugador,hpJugador)
@@ -150,14 +156,14 @@ object batalla{
 	      	
 	     	if(self.muerto(pokemonCompu))
 	     	{
-	     		//musicaBatalla.batalla().stop()
+	     		musicaBatalla.batalla().pause()
 	      		game.clear()
 	      		finalizarJuego.ganaste(pokemonJugador,pokemonCompu)
 	      	}else{
 	      		game.schedule(1500,{self.ataqueCompu()
 	      			if(self.muerto(pokemonJugador))
 	      			{
-	      				//musicaBatalla.batalla().stop()
+	      				musicaBatalla.batalla().pause()
 			      		game.clear()
 			      		finalizarJuego.perdiste(pokemonJugador,pokemonCompu)
 	      			}
@@ -173,14 +179,13 @@ object finalizarJuego{
 		pokemonJugador.hp(pokemonJugador.maxHp())
 		pokemonOponente.deseleccionar()
 		pokemonOponente.hp(pokemonOponente.maxHp())
-		//musicaTitulos.musicaInicio().play()
+		musicaTitulos.musicaInicio().resume()
 	}
 	
 	method ganaste(pokemonJugador,pokemonOponente){
 		game.addVisualIn(victoria,game.origin())
-		//musicaVictoria.victoria().play()
+		game.sound("VictoriaSound.mp3").play()
 		keyboard.c().onPressDo({
-			//musicaVictoria.victoria().stop()
 			manager.start()
 			game.removeVisual(victoria)
 			self.setPokemonesInicio(pokemonJugador,pokemonOponente)
@@ -191,8 +196,8 @@ object finalizarJuego{
 	method perdiste(pokemonJugador,pokemonOponente){
 		//musicaDerrota.derrota().play()
 		game.addVisualIn(derrota,game.origin())
+		game.sound("DerrotaSound.mp3").play()
 		keyboard.c().onPressDo({
-			//musicaDerrota.derrota().stop()
 			manager.start()
 			game.removeVisual(derrota)
 			self.setPokemonesInicio(pokemonJugador,pokemonOponente)
@@ -257,6 +262,7 @@ object manager{
 	}
 
 	method start(){
+		keyboard.m().onPressDo({musicaTitulos.musicaInicio().stop()})
 		seleccionador.lista(listaPokemons)
 		instanciarTipos.instanciar()
 		self.botones()
@@ -265,8 +271,8 @@ object manager{
 		
 		keyboard.space().onPressDo({
 			game.sound("Capturado.mp3").play()
-			//musicaTitulos.musicaInicio().stop()       // Lo sacamos porque solo puede reproducirse una vez 
-			//musicaBatalla.batalla().play()
+			musicaTitulos.musicaInicio().pause()
+			musicaBatalla.batalla().resume()
       		batalla.pokemonJugador(seleccionador.posicionActual())
       		seleccionador.asignarPokemonCompu()
       		game.clear()
@@ -283,9 +289,14 @@ program juego {
     game.height(15)
     game.boardGround("seleccion.jpg")
 	
-	musicaTitulos.musicaInicio().volume(0.5)
+	musicaBatalla.batalla().volume(0.2)
+	musicaBatalla.batalla().shouldLoop(true)
+	musicaTitulos.musicaInicio().volume(0.2)
 	musicaTitulos.musicaInicio().shouldLoop(true)
-	game.schedule(500, { musicaTitulos.musicaInicio().play()} )
+	game.schedule(500, { musicaTitulos.musicaInicio().play()
+						musicaBatalla.batalla().play()
+						musicaBatalla.batalla().pause()
+	} )
 	keyboard.m().onPressDo({musicaTitulos.musicaInicio().stop()})
 	
 	manager.start()
