@@ -76,11 +76,9 @@ class Item{
 
 //--------------------------- Clases Movimientos --------------------------//
 class Movimiento{
-	var pp
-    const ppMax
+	var property pp
+    const property ppMax
     const property tipo
-    const property potencia
-    const property precision
     var property tipoDeMovimiento
     var property text
     var property textColor
@@ -94,7 +92,10 @@ class Movimiento{
 }
 
 class Ataque inherits Movimiento(tipoDeMovimiento = "ataque"){
-    method efecto(objetivo, atacante) {
+    const property potencia
+    const property precision
+	
+	method efecto(objetivo, atacante) {
         pp--
         const danioRealizado = calculo.danio(atacante,objetivo,self)
         objetivo.recibirDanio(danioRealizado)
@@ -106,7 +107,7 @@ class Curacion inherits Movimiento(tipoDeMovimiento = "curacion"){
 
     method efecto(objetivo, atacante) {
         pp--
-        const nuevoHp = (objetivo.hp() + hpCurado).min(objetivo.hpMax())
+        const nuevoHp = (objetivo.hp() + hpCurado*objetivo.maxHp()).min(objetivo.maxHp())
         objetivo.hp(nuevoHp)
 	}
 }
@@ -148,6 +149,8 @@ object instanciarTipos{
 		electrico.esDebilContra([fuego,veneno,planta])
 		veneno.esFuerteContra([planta])
 		veneno.esDebilContra([veneno])
+		normal.esFuerteContra([])
+		normal.esDebilContra([])
 	}
 }
 
@@ -159,13 +162,30 @@ object instanciarTipos{
 
 // Movimientos
 const surf = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="SURF",tipo=agua, tipoDeMovimiento="ataque")
+const aguaCola = new Ataque(textColor="000000",potencia=90,pp=10,ppMax=16,precision=90,text="AGUA COLA",tipo=agua, tipoDeMovimiento="ataque")
+const cascada = new Ataque(textColor="000000",potencia=80,pp=15,ppMax=24,precision=100,text="CASCADA",tipo=agua, tipoDeMovimiento="ataque")
+
+const latigoCepa = new Ataque(textColor="000000",potencia=45,pp=25,ppMax=40,precision=100,text="LÁTIGO CEPA",tipo=planta, tipoDeMovimiento="ataque")
+const sintesis = new Curacion(textColor="000000",hpCurado=0.5,pp=25,ppMax=40,text="SÍNTESIS",tipo=planta, tipoDeMovimiento="curacion")
+const gigadrenado = new Ataque(textColor="000000",potencia=75,pp=10,ppMax=16,precision=100,text="GIGADRENADO",tipo=planta, tipoDeMovimiento="ataque")
+
+const ondaIgnea = new Ataque(textColor="000000",potencia=95,pp=10,ppMax=16,precision=90,text="ONDA ÍGNEA",tipo=fuego, tipoDeMovimiento="ataque")
+const colmilloIgneo = new Ataque(textColor="000000",potencia=65,pp=15,ppMax=24,precision=100,text="COLMILLO ÍGNEO",tipo=fuego, tipoDeMovimiento="ataque")
+
+const chispa = new Ataque(textColor="000000",potencia=65,pp=20,ppMax=32,precision=100,text="CHISPA",tipo=electrico, tipoDeMovimiento="ataque")
+const impactrueno = new Ataque(textColor="000000",potencia=40,pp=30,ppMax=48,precision=100,text="IMPACTRUENO",tipo=electrico, tipoDeMovimiento="ataque")
+
 const ondaToxica = new Ataque(textColor="000000",potencia=95,pp=20,ppMax=10,precision=100,text="ONDA TOXICA",tipo=veneno, tipoDeMovimiento="ataque")
-const ola = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="OLA",tipo=agua, tipoDeMovimiento="ataque")
-const canto = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="CANTO",tipo=agua, tipoDeMovimiento="ataque")
+const bombaLodo = new Ataque(textColor="000000",potencia=90,pp=10,ppMax=16,precision=80,text="BOMBA LODO",tipo=veneno, tipoDeMovimiento="ataque")
+
+const descanso = new Curacion(textColor="000000",hpCurado=1,pp=10,ppMax=16,text="DESCANSO",tipo=normal, tipoDeMovimiento="curacion")
+const ecoVoz = new Ataque(textColor="000000",potencia=40,pp=15,ppMax=24,precision=100,text="ECO VOZ",tipo=normal, tipoDeMovimiento="ataque")
+const dobleFilo = new Ataque(textColor="000000",potencia=120,pp=15,ppMax=24,precision=100,text="DOBLE FILO",tipo=normal, tipoDeMovimiento="ataque")
+const corte = new Ataque(textColor="000000",potencia=50,pp=30,ppMax=48,precision=95,text="CORTE",tipo=normal, tipoDeMovimiento="ataque")
 
 // Pokemones
 const pikachu = new Pokemon(position = game.at(1,7), 
-							movimientos = [surf, ondaToxica, ola, canto],
+							movimientos = [dobleFilo, impactrueno, chispa, descanso],
 							danioBase=91,
 							defensaBase=76,
 							hp=126,
@@ -182,7 +202,7 @@ const pikachu = new Pokemon(position = game.at(1,7),
 							velocidad = 126)
 							
 const gengar = new Pokemon(position = game.at(5,7), 
-							movimientos = [surf, ondaToxica, ola, canto],
+							movimientos = [bombaLodo, ondaToxica, gigadrenado, descanso],
 							danioBase=198,
 							defensaBase=188,
 							hp=293,
@@ -199,7 +219,7 @@ const gengar = new Pokemon(position = game.at(5,7),
 							velocidad = 288)
 							
 const charmander = new Pokemon(position = game.at(9,7), 
-							movimientos = [surf, ondaToxica, ola, canto],
+							movimientos = [ecoVoz, ondaIgnea, corte, colmilloIgneo],
 							danioBase=88,
 							defensaBase=79,
 							hp=130,
@@ -216,7 +236,7 @@ const charmander = new Pokemon(position = game.at(9,7),
 							velocidad = 101)
 							
 const bulbasaur = new Pokemon(position = game.at(13,7), 
-							movimientos = [surf, ondaToxica, ola, canto],
+							movimientos = [corte, bombaLodo, sintesis, latigoCepa],
 							danioBase=85,
 							defensaBase=85,
 							hp=136,
@@ -233,7 +253,7 @@ const bulbasaur = new Pokemon(position = game.at(13,7),
 							velocidad = 81)
 
 const vaporeon = new Pokemon(position = game.at(13,2), 
-							movimientos = [surf, ondaToxica, ola, canto],
+							movimientos = [cascada, ecoVoz, dobleFilo, aguaCola],
 							danioBase=101,
 							defensaBase=96,
 							hp=221,
