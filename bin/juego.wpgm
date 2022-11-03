@@ -74,18 +74,29 @@ object batalla{
 	
 	method ataqueJugador(){
 		seleccionador.posicionActual().efecto(pokemonCompu,pokemonJugador)
-		game.schedule(250,{self.actualizarVida(pokemonCompu,hpCompu)})
-		//pokemonCompu.heridoFrente()
-		//game.schedule(200, {pokemonCompu.seleccionar()})
-		
+		if (seleccionador.posicionActual().tipoDeMovimiento()=="curacion"){
+			game.schedule(250,{self.actualizarVida(pokemonJugador,hpJugador)})
+		}else{
+			game.schedule(250,{self.actualizarVida(pokemonCompu,hpCompu)
+				pokemonCompu.heridoFrente()
+				game.schedule(100, {pokemonCompu.seleccionar()})
+			})
+		}	
 	}
 	
 	method ataqueCompu(){
 		const indiceRandom = 0.randomUpTo(3).roundUp()
-		pokemonCompu.movimientos().get(indiceRandom).efecto(pokemonJugador,pokemonCompu)
-		game.schedule(1500,{self.actualizarVida(pokemonJugador,hpJugador)})
-		//pokemonJugador.heridoBack()
-		//game.schedule(200, {pokemonJugador.mostrarBack()})
+		var movimientoCompu=pokemonCompu.movimientos().get(indiceRandom)
+		movimientoCompu.efecto(pokemonJugador,pokemonCompu)
+		if (movimientoCompu.tipoDeMovimiento()=="curacion"){
+			self.actualizarVida(pokemonCompu,hpCompu)
+		}else{
+		
+			self.actualizarVida(pokemonJugador,hpJugador)
+			pokemonJugador.heridoBack()
+			game.schedule(100, {pokemonJugador.mostrarBack()})
+			
+		}
 	}
 	
 	method muerto(pokemon)= pokemon.hp()==0
@@ -105,12 +116,12 @@ object batalla{
 		//							ratio, altura,inicial
 		visuals.anadirListaVisuals(game.width()*0.2,3,3)
 	}
-	
+	method inicializarVida(pokemon,vida){vida.text(pokemon.hp().toString())}
 	method start(){
 		seleccionador.lista(pokemonJugador.movimientos())
 		self.hud()
-		self.actualizarVida(pokemonJugador,hpJugador)
-		self.actualizarVida(pokemonCompu,hpCompu)
+		self.inicializarVida(pokemonJugador,hpJugador)
+		self.inicializarVida(pokemonCompu,hpCompu)
 		self.anadirVisuals()
 		manager.botones()
 	    
@@ -122,12 +133,13 @@ object batalla{
 	      		game.clear()
 	      		finalizarJuego.ganaste(pokemonJugador,pokemonCompu)
 	      	}else{
-	        	self.ataqueCompu()
-	      	}
-	      	if(self.muerto(pokemonJugador))
-	      	{
-	      		game.clear()
-	      		finalizarJuego.perdiste(pokemonJugador,pokemonCompu)
+	      		game.schedule(1500,{self.ataqueCompu()
+	      			if(self.muerto(pokemonJugador))
+	      			{
+			      		game.clear()
+			      		finalizarJuego.perdiste(pokemonJugador,pokemonCompu)
+	      			}
+	      		})
 	      	}
 	     })		
 	}
@@ -222,7 +234,7 @@ object manager{
 		//							ratio, altura, inicial
 		visuals.anadirListaVisuals(game.width()/4,3,0)
 		
-		keyboard.enter().onPressDo({
+		keyboard.space().onPressDo({
       		batalla.pokemonJugador(seleccionador.posicionActual())
       		seleccionador.asignarPokemonCompu()
       		game.clear()

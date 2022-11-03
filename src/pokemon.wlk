@@ -83,6 +83,7 @@ class Movimiento{
     var property text
     var property textColor
     
+
     method seleccionar(){
     	textColor="FF0000"
     }
@@ -93,8 +94,7 @@ class Movimiento{
 
 class Ataque inherits Movimiento(tipoDeMovimiento = "ataque"){
     const property potencia
-    const property precision
-	
+	const property precision
 	method efecto(objetivo, atacante) {
         pp--
         const danioRealizado = calculo.danio(atacante,objetivo,self)
@@ -105,7 +105,7 @@ class Ataque inherits Movimiento(tipoDeMovimiento = "ataque"){
 class Curacion inherits Movimiento(tipoDeMovimiento = "curacion"){
     const property hpCurado
 
-    method efecto(objetivo, atacante) {
+    method efecto(atacante, objetivo) {
         pp--
         const nuevoHp = (objetivo.hp() + hpCurado*objetivo.maxHp()).min(objetivo.maxHp())
         objetivo.hp(nuevoHp)
@@ -137,6 +137,7 @@ const planta= new Tipo()
 const fuego= new Tipo()
 const electrico= new Tipo()
 const veneno= new Tipo()
+const normal= new Tipo()
 object instanciarTipos{
 	method instanciar(){
 		agua.esFuerteContra([fuego])
@@ -149,16 +150,10 @@ object instanciarTipos{
 		electrico.esDebilContra([fuego,veneno,planta])
 		veneno.esFuerteContra([planta])
 		veneno.esDebilContra([veneno])
-		normal.esFuerteContra([])
-		normal.esDebilContra([])
+		normal.esFuerteContra()
+		normal.esDebilContra()
 	}
 }
-
-
-//const fuego = new Tipo(esFuerteContra = [planta], esDebilContra = [agua,fuego])
-
-//const electrico = new Tipo(esFuerteContra = [agua], esDebilContra = [planta])
-//const veneno = new Tipo(esFuerteContra = [planta], esDebilContra = [veneno])
 
 // Movimientos
 const surf = new Ataque(textColor="000000",potencia=15,pp=20,ppMax=25,precision=80,text="SURF",tipo=agua, tipoDeMovimiento="ataque")
