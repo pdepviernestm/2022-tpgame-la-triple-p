@@ -10,7 +10,7 @@ object calculo{
 	}
 	
 	method precision(precision){
-		if (0.randomUpTo(1)<precision) return 1 else return 0
+		if (0.randomUpTo(100)<precision) return 1 else return 0
 	}
 	
 	// Se agrega en consideración el tipo del movimiento, del atacante, y del objetivo

@@ -94,8 +94,13 @@ object batalla{
 	
 	method ataqueJugador(){
 		var movimientoJugador = seleccionador.posicionActual()
-		movimientoJugador.efecto(pokemonCompu,pokemonJugador)
-		game.say(pokemonJugador, pokemonJugador.nombre() + " ha usado " + movimientoJugador.text() + "!")
+		const danioRealizado = movimientoJugador.efecto(pokemonCompu,pokemonJugador)
+		if(danioRealizado==0){
+			game.say(pokemonJugador, pokemonJugador.nombre() + " ha fallado!")
+			
+		}else{
+			game.say(pokemonJugador, pokemonJugador.nombre() + " ha usado " + movimientoJugador.text() + "!")
+		}
 		if (movimientoJugador.tipoDeMovimiento()=="curacion"){
 			game.schedule(250,{
 				self.actualizarVida(pokemonJugador,hpJugador)
@@ -112,8 +117,13 @@ object batalla{
 	method ataqueCompu(){
 		const indiceRandom = 0.randomUpTo(3).roundUp()
 		var movimientoCompu=pokemonCompu.movimientos().get(indiceRandom)
-		movimientoCompu.efecto(pokemonJugador,pokemonCompu)
-		game.say(pokemonCompu, pokemonCompu.nombre() + " ha usado " +movimientoCompu.text() + "!")
+		const danioRealizado = movimientoCompu.efecto(pokemonJugador,pokemonCompu)
+		if(danioRealizado==0){
+			game.say(pokemonCompu, pokemonCompu.nombre() + " ha fallado!")
+			
+		}else{
+			game.say(pokemonCompu, pokemonCompu.nombre() + " ha usado " +movimientoCompu.text() + "!")
+		}
 		if (movimientoCompu.tipoDeMovimiento()=="curacion"){
 			self.actualizarVida(pokemonCompu,hpCompu)
 		}else{
@@ -144,6 +154,7 @@ object batalla{
 	
 	method start(){
 		seleccionador.lista(pokemonJugador.movimientos())
+		seleccionador.indice(0)
 		self.hud()
 		self.inicializarVida(pokemonJugador,hpJugador)
 		self.inicializarVida(pokemonCompu,hpCompu)
@@ -211,7 +222,7 @@ object seleccionador{
 	method moverDerecha(){
 		game.sound("Muevo.mp3").play()
 		self.posicionActual().deseleccionar()
-		indice = 3.min(indice+1)
+		indice = (lista.size()-1).min(indice+1)
 		self.posicionActual().seleccionar()
 	}
 	
@@ -225,10 +236,10 @@ object seleccionador{
 	method posicionActual() = lista.get(indice)
 	
 	method asignarPokemonCompu(){
-		const indiceRandom = 0.randomUpTo(3).roundUp()
+		const indiceRandom = 0.randomUpTo((lista.size()-1)).roundUp()
 		if(indiceRandom!=indice){
 			batalla.pokemonCompu(lista.get(indiceRandom))
-		}else if(indiceRandom < 3){
+		}else if(indiceRandom < (lista.size()-1)){
 			batalla.pokemonCompu(lista.get(indiceRandom+1))
 		}else{
 			batalla.pokemonCompu(lista.get(indiceRandom-1))
@@ -248,7 +259,7 @@ object visuals{
 }
 
 object manager{
-	var property listaPokemons = [pikachu,charmander,gengar,bulbasaur]
+	var property listaPokemons = [pikachu,charmander,gengar,bulbasaur,vaporeon]
 	
 	method botones(){
 		keyboard.right().onPressDo({
@@ -265,7 +276,7 @@ object manager{
 		instanciarTipos.instanciar()
 		self.botones()
 		//							ratio, altura, inicial
-		visuals.anadirListaVisuals(game.width()/4,2,1)
+		visuals.anadirListaVisuals(game.width()/5,2,0)
 		
 		keyboard.space().onPressDo({
 			game.sound("Capturado.mp3").play()

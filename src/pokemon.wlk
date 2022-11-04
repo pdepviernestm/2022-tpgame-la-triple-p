@@ -100,6 +100,7 @@ class Ataque inherits Movimiento(tipoDeMovimiento = "ataque"){
         const danioRealizado = calculo.danio(atacante,objetivo,self)
         objetivo.recibirDanio(danioRealizado)
         game.sound("Danio.mp3").play()
+        return danioRealizado
 	}
 }
 
@@ -111,6 +112,7 @@ class Curacion inherits Movimiento(tipoDeMovimiento = "curacion"){
         const nuevoHp = (objetivo.hp() + hpCurado*objetivo.maxHp()).min(objetivo.maxHp())
         objetivo.hp(nuevoHp)
         game.sound("Curacion.mp3").play()
+        return nuevoHp
 	}
 }
 
@@ -146,10 +148,10 @@ object instanciarTipos{
 		agua.esDebilContra([agua,planta])
 		planta.esFuerteContra([agua])
 		planta.esDebilContra([fuego,veneno,planta])
-		fuego.esFuerteContra([agua])
-		fuego.esDebilContra([fuego,veneno,planta])
+		fuego.esFuerteContra([planta])
+		fuego.esDebilContra([fuego,agua])
 		electrico.esFuerteContra([agua])
-		electrico.esDebilContra([fuego,veneno,planta])
+		electrico.esDebilContra([electrico,planta])
 		veneno.esFuerteContra([planta])
 		veneno.esDebilContra([veneno])
 		normal.esFuerteContra()
@@ -200,11 +202,11 @@ const pikachu = new Pokemon(position = game.at(1,7),
 							
 const gengar = new Pokemon(position = game.at(5,7), 
 							movimientos = [bombaLodo, ondaToxica, gigadrenado, descanso],
-							danioBase=198,
-							defensaBase=188,
-							hp=293,
+							danioBase=101,
+							defensaBase=96,
+							hp=151,
 							item="",
-							maxHp=293, 
+							maxHp=151, 
 							nivel=50, 
 							nombre="  Gengar",
 							spriteFrente="GengarFrente.png", 
@@ -213,7 +215,7 @@ const gengar = new Pokemon(position = game.at(5,7),
 							heridoBack="GengarBackDanio.png",
 							pokeball="pokeball.png", 
 							tipo=veneno, 
-							velocidad = 288)
+							velocidad = 146)
 							
 const charmander = new Pokemon(position = game.at(9,7), 
 							movimientos = [ecoVoz, ondaIgnea, corte, colmilloIgneo],
@@ -257,7 +259,7 @@ const vaporeon = new Pokemon(position = game.at(13,2),
 							item="",
 							maxHp=221, 
 							nivel=50, 
-							nombre="Vaporeon",
+							nombre="  Vaporeon",
 							spriteFrente="VaporeonFrente.png", 
 							spriteBack="VaporeonBack.png", 
 							heridoFrente="VaporeonFrenteDanio.png",

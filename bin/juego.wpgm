@@ -26,7 +26,6 @@ object fondoSeleccion{
 	method image() = "seleccion.jpg"
 }
 
-
 object hpJugador{
 	var property text
 	var property textColor = "0000FF"
@@ -39,19 +38,40 @@ object hpCompu{
 
 object lvlJugador{
 	var property text
+	var property textColor = "000000"
 }
 
 object lvlCompu{
 	var property text
+	var property textColor = "000000"
 }
 
 object nombreJugador{
 	var property text
+	var property textColor = "000000"
 }
 
 object nombreCompu{
 	var property text
+	var property textColor = "000000"
 }
+
+object musicaTitulos{
+	const property musicaInicio = game.sound("MusicaInicio.mp3")
+}
+
+object musicaBatalla{
+	const property batalla = game.sound("Batalla.mp3")
+}
+
+object musicaDerrota{
+	const property derrota = game.sound("Derrota.mp3")
+}
+
+object musicaVictoria{
+	const property victoria = game.sound("Victoria.mp3")
+}
+
 
 object batalla{
 	var property pokemonCompu
@@ -73,11 +93,21 @@ object batalla{
 	}
 	
 	method ataqueJugador(){
-		seleccionador.posicionActual().efecto(pokemonCompu,pokemonJugador)
-		if (seleccionador.posicionActual().tipoDeMovimiento()=="curacion"){
-			game.schedule(250,{self.actualizarVida(pokemonJugador,hpJugador)})
+		var movimientoJugador = seleccionador.posicionActual()
+		const danioRealizado = movimientoJugador.efecto(pokemonCompu,pokemonJugador)
+		if(danioRealizado==0){
+			game.say(pokemonJugador, pokemonJugador.nombre() + " ha fallado!")
+			
 		}else{
-			game.schedule(250,{self.actualizarVida(pokemonCompu,hpCompu)
+			game.say(pokemonJugador, pokemonJugador.nombre() + " ha usado " + movimientoJugador.text() + "!")
+		}
+		if (movimientoJugador.tipoDeMovimiento()=="curacion"){
+			game.schedule(250,{
+				self.actualizarVida(pokemonJugador,hpJugador)
+			})
+		}else{
+			game.schedule(250,{
+				self.actualizarVida(pokemonCompu,hpCompu)
 				pokemonCompu.heridoFrente()
 				game.schedule(100, {pokemonCompu.seleccionar()})
 			})
@@ -87,15 +117,19 @@ object batalla{
 	method ataqueCompu(){
 		const indiceRandom = 0.randomUpTo(3).roundUp()
 		var movimientoCompu=pokemonCompu.movimientos().get(indiceRandom)
-		movimientoCompu.efecto(pokemonJugador,pokemonCompu)
+		const danioRealizado = movimientoCompu.efecto(pokemonJugador,pokemonCompu)
+		if(danioRealizado==0){
+			game.say(pokemonCompu, pokemonCompu.nombre() + " ha fallado!")
+			
+		}else{
+			game.say(pokemonCompu, pokemonCompu.nombre() + " ha usado " +movimientoCompu.text() + "!")
+		}
 		if (movimientoCompu.tipoDeMovimiento()=="curacion"){
 			self.actualizarVida(pokemonCompu,hpCompu)
 		}else{
-		
 			self.actualizarVida(pokemonJugador,hpJugador)
 			pokemonJugador.heridoBack()
 			game.schedule(100, {pokemonJugador.mostrarBack()})
-			
 		}
 	}
 	
@@ -103,22 +137,24 @@ object batalla{
 	
 	method anadirVisuals(){
 		game.addVisualIn(pokemonJugador,game.at(3,4))
-		game.addVisualIn(pokemonCompu,game.at(11,8))
+		game.addVisualIn(pokemonCompu,game.at(11,9))
 		game.addVisualIn(statsCartel,game.at(11,5))
 		game.addVisualIn(statsCartel2,game.at(3,10))
 	    game.addVisualIn(hpJugador,game.at(12,6))
-	    game.addVisualIn(hpCompu,game.at(4,10))
+	    game.addVisualIn(hpCompu,game.at(4,11))
 	    game.addVisualIn(lvlJugador,game.at(12,5))
-	    game.addVisualIn(lvlCompu,game.at(4,9))
+	    game.addVisualIn(lvlCompu,game.at(4,10))
 	    game.addVisualIn(nombreJugador,game.at(12,7))
-	    game.addVisualIn(nombreCompu,game.at(4,11))
+	    game.addVisualIn(nombreCompu,game.at(4,12))
 		game.addVisualIn(cartel, game.at(0,0))
 		//							ratio, altura,inicial
 		visuals.anadirListaVisuals(game.width()*0.2,3,3)
 	}
 	method inicializarVida(pokemon,vida){vida.text(pokemon.hp().toString())}
+	
 	method start(){
 		seleccionador.lista(pokemonJugador.movimientos())
+		seleccionador.indice(0)
 		self.hud()
 		self.inicializarVida(pokemonJugador,hpJugador)
 		self.inicializarVida(pokemonCompu,hpCompu)
@@ -130,12 +166,14 @@ object batalla{
 	      	
 	     	if(self.muerto(pokemonCompu))
 	     	{
+	     		musicaBatalla.batalla().pause()
 	      		game.clear()
 	      		finalizarJuego.ganaste(pokemonJugador,pokemonCompu)
 	      	}else{
 	      		game.schedule(1500,{self.ataqueCompu()
 	      			if(self.muerto(pokemonJugador))
 	      			{
+	      				musicaBatalla.batalla().pause()
 			      		game.clear()
 			      		finalizarJuego.perdiste(pokemonJugador,pokemonCompu)
 	      			}
@@ -151,10 +189,12 @@ object finalizarJuego{
 		pokemonJugador.hp(pokemonJugador.maxHp())
 		pokemonOponente.deseleccionar()
 		pokemonOponente.hp(pokemonOponente.maxHp())
+		musicaTitulos.musicaInicio().resume()
 	}
 	
 	method ganaste(pokemonJugador,pokemonOponente){
 		game.addVisualIn(victoria,game.origin())
+		game.sound("VictoriaSound.mp3").play()
 		keyboard.c().onPressDo({
 			manager.start()
 			game.removeVisual(victoria)
@@ -164,7 +204,9 @@ object finalizarJuego{
 	}
 	
 	method perdiste(pokemonJugador,pokemonOponente){
+		//musicaDerrota.derrota().play()
 		game.addVisualIn(derrota,game.origin())
+		game.sound("DerrotaSound.mp3").play()
 		keyboard.c().onPressDo({
 			manager.start()
 			game.removeVisual(derrota)
@@ -178,12 +220,14 @@ object seleccionador{
 	var property indice = 0
 	
 	method moverDerecha(){
+		game.sound("Muevo.mp3").play()
 		self.posicionActual().deseleccionar()
-		indice = 3.min(indice+1)
+		indice = (lista.size()-1).min(indice+1)
 		self.posicionActual().seleccionar()
 	}
 	
 	method moverIzquierda(){
+		game.sound("Muevo.mp3").play()
 		self.posicionActual().deseleccionar()
 		indice = 0.max(indice-1)
 		self.posicionActual().seleccionar()
@@ -192,10 +236,10 @@ object seleccionador{
 	method posicionActual() = lista.get(indice)
 	
 	method asignarPokemonCompu(){
-		const indiceRandom = 0.randomUpTo(3).roundUp()
+		const indiceRandom = 0.randomUpTo((lista.size()-1)).roundUp()
 		if(indiceRandom!=indice){
 			batalla.pokemonCompu(lista.get(indiceRandom))
-		}else if(indiceRandom < 3){
+		}else if(indiceRandom < (lista.size()-1)){
 			batalla.pokemonCompu(lista.get(indiceRandom+1))
 		}else{
 			batalla.pokemonCompu(lista.get(indiceRandom-1))
@@ -215,7 +259,7 @@ object visuals{
 }
 
 object manager{
-	var property listaPokemons = [pikachu,charmander,gengar,bulbasaur]
+	var property listaPokemons = [pikachu,charmander,gengar,bulbasaur,vaporeon]
 	
 	method botones(){
 		keyboard.right().onPressDo({
@@ -232,17 +276,19 @@ object manager{
 		instanciarTipos.instanciar()
 		self.botones()
 		//							ratio, altura, inicial
-		visuals.anadirListaVisuals(game.width()/4,3,0)
+		visuals.anadirListaVisuals(game.width()/5,2,0)
 		
 		keyboard.space().onPressDo({
+			game.sound("Capturado.mp3").play()
+			musicaTitulos.musicaInicio().pause()
+			musicaBatalla.batalla().resume()
       		batalla.pokemonJugador(seleccionador.posicionActual())
       		seleccionador.asignarPokemonCompu()
       		game.clear()
       		game.addVisualIn(batallaFondo, game.origin())
       		batalla.start()
     	})
-	}
-	
+	}	
 }
 
 program juego {
@@ -251,6 +297,15 @@ program juego {
     game.width(20)
     game.height(15)
     game.boardGround("seleccion.jpg")
+	
+	musicaBatalla.batalla().volume(0.1)
+	musicaBatalla.batalla().shouldLoop(true)
+	musicaTitulos.musicaInicio().volume(0.1)
+	musicaTitulos.musicaInicio().shouldLoop(true)
+	game.schedule(500, { musicaTitulos.musicaInicio().play()
+						musicaBatalla.batalla().play()
+						musicaBatalla.batalla().pause()
+	} )
 	
 	manager.start()
     game.start()
