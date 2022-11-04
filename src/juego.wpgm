@@ -70,8 +70,7 @@ object musicaDerrota{
 
 object musicaVictoria{
 	const property victoria = game.sound("Victoria.mp3")
-}
-
+} 
 
 object batalla{
 	var property pokemonCompu
@@ -84,7 +83,33 @@ object batalla{
 	    lvlCompu.text(pokemonCompu.nivel().toString())
 	    nombreJugador.text(pokemonJugador.nombre())
 	    nombreCompu.text(pokemonCompu.nombre())
+	    
+	    keyboard.h().onPressDo({self.crearStats(pokemonJugador.movimientos())})
 	}
+	
+	method crearStats(listaMov){
+		var i = 3
+		
+		listaMov.forEach{x=>
+			if(x.tipoDeMovimiento()=="ataque"){
+				const vPotencia = new VisualizadorPotencia(text = "Potencia: " + x.potencia().toString())
+				const vPrecision = new VisualizadorPrecision(text = "Precisión: " + x.precision().toString())
+				self.mostrarStatsAtaque(vPotencia, vPrecision, i)
+			}else{
+				const vHpCurado = new VisualizadorHpCurado(text = "Regeneración: " + (x.hpCurado()*100).toString() + "%")
+				self.mostrarStatsCuracion(vHpCurado, i)
+			}
+			i = i+4
+		}
+	}
+ 
+ 	method mostrarStatsAtaque(vPotencia, vPrecision, i){
+ 		game.addVisualIn(vPrecision, game.at(i,2))
+		game.addVisualIn(vPotencia, game.at(i,1))
+ 	}
+ 	method mostrarStatsCuracion(vHpCurado, i){
+ 		game.addVisualIn(vHpCurado, game.at(i,2))
+ 	}
 	
 	method actualizarVida(pokemon,vida){
 		vida.text(pokemon.hp().toString())
@@ -97,9 +122,8 @@ object batalla{
 		const danioRealizado = movimientoJugador.efecto(pokemonCompu,pokemonJugador)
 		if(danioRealizado==0){
 			game.say(pokemonJugador, pokemonJugador.nombre() + " ha fallado!")
-			
 		}else{
-			game.say(pokemonJugador, pokemonJugador.nombre() + " ha usado " + movimientoJugador.text() + "!")
+			game.say(pokemonJugador, movimientoJugador.text() + "!")
 		}
 		if (movimientoJugador.tipoDeMovimiento()=="curacion"){
 			game.schedule(250,{
@@ -122,7 +146,7 @@ object batalla{
 			game.say(pokemonCompu, pokemonCompu.nombre() + " ha fallado!")
 			
 		}else{
-			game.say(pokemonCompu, pokemonCompu.nombre() + " ha usado " +movimientoCompu.text() + "!")
+			game.say(pokemonCompu, movimientoCompu.text() + "!")
 		}
 		if (movimientoCompu.tipoDeMovimiento()=="curacion"){
 			self.actualizarVida(pokemonCompu,hpCompu)
@@ -135,7 +159,7 @@ object batalla{
 	
 	method muerto(pokemon)= pokemon.hp()==0
 	
-	method anadirVisuals(){
+	method anadirVisuals(){		
 		game.addVisualIn(pokemonJugador,game.at(3,4))
 		game.addVisualIn(pokemonCompu,game.at(11,9))
 		game.addVisualIn(statsCartel,game.at(11,5))
@@ -150,6 +174,7 @@ object batalla{
 		//							ratio, altura,inicial
 		visuals.anadirListaVisuals(game.width()*0.2,3,3)
 	}
+	
 	method inicializarVida(pokemon,vida){vida.text(pokemon.hp().toString())}
 	
 	method start(){

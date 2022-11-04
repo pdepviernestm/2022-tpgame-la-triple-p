@@ -17,12 +17,13 @@
 ## Reglas de Juego
 
 Este es un juego de batallas pokemon.
-- Se debe seleccionar un pokemon para luchar
-- Se generará un rival automáticamente
-- En un sistema de batalla por turnos, se debe elegir entre las habilidades del pokemon para ganar la partida
+- Se debe seleccionar un pokemon para luchar.
+- Se generará un rival automáticamente.
+- En un sistema de batalla por turnos, se debe elegir entre las habilidades del pokemon para ganar la partida.
+- Al terminar la partida se podrá volver a empezar eligiendo un nuevo pokemon!
 
 ## Otros
 
 - UTN FRBA - K2005
-- Wollok 2021
-- Una vez terminado, no tenemos problemas en que el repositorio sea público / queremos manternerlo privado
+- Realizado con Wollok 2021
+- Una vez terminado, no tenemos problemas en que el repositorio sea público
